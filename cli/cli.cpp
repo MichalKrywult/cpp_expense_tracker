@@ -1,4 +1,5 @@
 #include <iostream>
+#include <stdexcept>
 
 #include "cli.h"
 #include "../transaction/transaction.h"
@@ -70,14 +71,48 @@ TransactionType CLI::readTransactionType()
 
 void CLI::handleAddingTransaction()
 {
-    Transaction transaction(
-        readString("Title: "),
-        readDouble("Amount: "),
-        readString("Category: "),
-        readString("Date: "),
-        readTransactionType());
+    while (true)
+    {
+        try
+        {
+            TransactionType type = readTransactionType();
+            std::string category = readString("Category: ");
 
-    manager.addTransaction(transaction);
+            std::string title;
+            while (true)
+            {
+                title = readString("Title: ");
+
+                if (!title.empty())
+                    break;
+
+                std::cout << "Title cannot be empty.\n";
+            }
+
+            double amount;
+            while (true)
+            {
+                amount = readDouble("Amount: ");
+
+                if (amount > 0)
+                    break;
+
+                std::cout << "Amount must be positive.\n";
+            }
+
+            std::string date = readString("Date: ");
+
+            Transaction transaction(title, amount, category, date, type);
+            manager.addTransaction(transaction);
+
+            std::cout << "Transaction added successfully.\n";
+            return;
+        }
+        catch (const std::exception &e)
+        {
+            std::cout << e.what() << "\nPlease try again.\n\n";
+        }
+    }
 }
 
 void CLI::showTransactions()
