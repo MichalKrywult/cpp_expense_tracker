@@ -13,6 +13,7 @@ private:
     TransactionType readTransactionType();
 
     void handleAddingTransaction();
+    void showTransactions();
 
 public:
     CLI(TransactionManager &manager);

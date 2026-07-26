@@ -80,6 +80,11 @@ void CLI::handleAddingTransaction()
     manager.addTransaction(transaction);
 }
 
+void CLI::showTransactions()
+{
+    manager.showTransactions();
+}
+
 void CLI::run()
 {
     while (true)
@@ -94,6 +99,7 @@ void CLI::run()
             handleAddingTransaction();
             break;
         case 2:
+            showTransactions();
             break;
         case 0:
             std::cout << "Goodbye!";

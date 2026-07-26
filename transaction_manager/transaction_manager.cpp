@@ -8,6 +8,13 @@ void TransactionManager::addTransaction(const Transaction &transaction)
 
 void TransactionManager::showTransactions() const
 {
+
+    if (transactions.size() == 0)
+    {
+        std::cout << "No transactions.\n";
+        return;
+    }
+
     for (const auto &transaction : transactions)
     {
         transaction.print();

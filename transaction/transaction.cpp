@@ -67,6 +67,7 @@ std::string Transaction::getTypeString() const
 void Transaction::print() const
 {
     std::cout
+        << getTypeString() << " | "
         << title << " | "
         << amount << " | "
         << category << " | "
