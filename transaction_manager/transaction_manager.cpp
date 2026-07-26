@@ -10,10 +10,6 @@ void TransactionManager::showTransactions() const
 {
     for (const auto &transaction : transactions)
     {
-        std::cout << transaction.getTitle() << " "
-                  << transaction.getTypeString() << " "
-                  << transaction.getAmount() << " "
-                  << transaction.getCategory() << " "
-                  << transaction.getDate() << '\n';
+        transaction.print();
     }
 }

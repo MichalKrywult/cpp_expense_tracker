@@ -1,5 +1,7 @@
-#include "transaction.h"
+#include <iostream>
 #include <stdexcept>
+
+#include "transaction.h"
 
 Transaction::Transaction(
     std::string title,
@@ -60,4 +62,13 @@ std::string Transaction::getTypeString() const
     }
 
     return "Unknown";
+}
+
+void Transaction::print() const
+{
+    std::cout
+        << title << " | "
+        << amount << " | "
+        << category << " | "
+        << date << '\n';
 }
