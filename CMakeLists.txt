@@ -8,6 +8,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 add_executable(
     ExpenseTracker
     main.cpp
+    transaction/transaction.cpp
     transaction_manager/transaction_manager.cpp
 )
 

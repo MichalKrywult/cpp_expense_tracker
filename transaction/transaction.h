@@ -27,7 +27,7 @@ public:
 
     std::string getTitle() const;
     double getAmount() const;
-    std::string getCategory() const;
-    std::string getDate() const;
-    TransactionType getType() const;
+    std::string getCategory() const; // TODO
+    std::string getDate() const;     // TODO
+    TransactionType getType() const; // TODO
 };
