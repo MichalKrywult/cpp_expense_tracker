@@ -16,3 +16,14 @@ target_include_directories(
     ExpenseTracker
     PRIVATE .
 )
+
+if(MSVC)
+    target_compile_options(ExpenseTracker PRIVATE /W4)
+else()
+    target_compile_options(ExpenseTracker PRIVATE
+        -Wall
+        -Wextra
+        -Wpedantic
+        -Wswitch-enum
+    )
+endif()
