@@ -9,4 +9,6 @@ private:
     std::vector<Transaction> transactions;
 
 public:
+    void addTransaction(const Transaction &transaction);
+    void showTransactions() const;
 };
