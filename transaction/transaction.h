@@ -8,25 +8,26 @@ enum class TransactionType
     Expense
 };
 
-struct Transaction
+class Transaction
 {
+private:
     std::string title;
     double amount;
     std::string category;
     std::string date;
     TransactionType type;
 
+public:
     Transaction(
         std::string title,
         double amount,
         std::string category,
         std::string date,
-        TransactionType type)
-        : title(title),
-          amount(amount),
-          category(category),
-          date(date),
-          type(type)
-    {
-    }
+        TransactionType type);
+
+    std::string getTitle() const;
+    double getAmount() const;
+    std::string getCategory() const;
+    std::string getDate() const;
+    TransactionType getType() const;
 };
