@@ -10,6 +10,7 @@ add_executable(
     main.cpp
     transaction/transaction.cpp
     transaction_manager/transaction_manager.cpp
+    cli/cli.cpp
 )
 
 target_include_directories(
