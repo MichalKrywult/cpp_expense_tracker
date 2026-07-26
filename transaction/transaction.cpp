@@ -33,3 +33,31 @@ double Transaction::getAmount() const
 {
     return amount;
 }
+
+std::string Transaction::getCategory() const
+{
+    return category;
+}
+
+std::string Transaction::getDate() const
+{
+    return date;
+}
+
+TransactionType Transaction::getType() const
+{
+    return type;
+}
+
+std::string Transaction::getTypeString() const
+{
+    switch (type)
+    {
+    case TransactionType::Income:
+        return "Income";
+    case TransactionType::Expense:
+        return "Expense";
+    }
+
+    return "Unknown";
+}
