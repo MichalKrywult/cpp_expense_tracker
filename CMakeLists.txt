@@ -7,10 +7,11 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_executable(
     ExpenseTracker
-    src/main.cpp
+    main.cpp
+    transaction/transaction.cpp
 )
 
 target_include_directories(
     ExpenseTracker
-    PRIVATE include
+    PRIVATE .
 )
