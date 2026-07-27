@@ -11,4 +11,6 @@ private:
 public:
     void addTransaction(const Transaction &transaction);
     void showTransactions() const;
+    void searchTransactionByTitle(const std::string &title) const;
+    bool ensureNotEmpty() const;
 };

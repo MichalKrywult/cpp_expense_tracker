@@ -14,6 +14,7 @@ private:
 
     void handleAddingTransaction();
     void showTransactions();
+    void searchTransactionByTitle();
 
 public:
     CLI(TransactionManager &manager);

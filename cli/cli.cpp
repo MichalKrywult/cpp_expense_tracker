@@ -120,12 +120,19 @@ void CLI::showTransactions()
     manager.showTransactions();
 }
 
+void CLI::searchTransactionByTitle()
+{
+    std::string title = readString("Title to search: ");
+    manager.searchTransactionByTitle(title);
+}
+
 void CLI::run()
 {
     while (true)
     {
         std::cout << "1. Add\n";
         std::cout << "2. Show\n";
+        std::cout << "3. Search by title\n";
         std::cout << "0. Exit\n";
 
         switch (readInt("Choice: "))
@@ -135,6 +142,9 @@ void CLI::run()
             break;
         case 2:
             showTransactions();
+            break;
+        case 3:
+            searchTransactionByTitle();
             break;
         case 0:
             std::cout << "Goodbye!";
