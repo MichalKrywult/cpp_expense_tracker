@@ -3,6 +3,13 @@
 #include "../transaction/transaction.h"
 #include <vector>
 
+struct Summary
+{
+    double income;
+    double expense;
+    double balance;
+};
+
 class TransactionManager
 {
 private:
@@ -14,4 +21,5 @@ public:
     void searchTransactionByTitle(const std::string &title) const;
     bool ensureNotEmpty() const;
     void removeTransaction(int index);
+    Summary calculateSummary() const;
 };

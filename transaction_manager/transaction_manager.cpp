@@ -31,12 +31,34 @@ void TransactionManager::showTransactions() const
 
 void TransactionManager::removeTransaction(int index)
 {
+    if (!ensureNotEmpty())
+        return;
+
     if (index < 1 || index > transactions.size())
     {
         throw std::out_of_range("Invalid transaction number.");
     }
 
     transactions.erase(transactions.begin() + (index - 1));
+}
+
+Summary TransactionManager::calculateSummary() const
+{
+    if (!ensureNotEmpty())
+        return Summary{0.0, 0.0, 0.0};
+
+    Summary summary{0.0, 0.0, 0.0};
+
+    for (const auto &transaction : transactions)
+    {
+        if (transaction.getType() == TransactionType::Income)
+            summary.income += transaction.getAmount();
+        else
+            summary.expense += transaction.getAmount();
+    }
+
+    summary.balance = summary.income - summary.expense;
+    return summary;
 }
 
 void TransactionManager::searchTransactionByTitle(const std::string &title) const

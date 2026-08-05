@@ -69,6 +69,16 @@ TransactionType CLI::readTransactionType()
     }
 }
 
+void CLI::showSummary()
+{
+    Summary summary = manager.calculateSummary();
+
+    std::cout << "========== SUMMARY ==========\n";
+    std::cout << "Income : " << summary.income << '\n';
+    std::cout << "Expense: " << summary.expense << '\n';
+    std::cout << "Balance: " << summary.balance << '\n';
+}
+
 void CLI::handleAddingTransaction()
 {
     while (true)
@@ -152,6 +162,7 @@ void CLI::run()
         std::cout << "2. Show\n";
         std::cout << "3. Search by title\n";
         std::cout << "4. Remove\n";
+        std::cout << "5. Summary\n";
         std::cout << "0. Exit\n";
 
         switch (readInt("Choice: "))
@@ -167,6 +178,9 @@ void CLI::run()
             break;
         case 4:
             handleRemovingTransaction();
+            break;
+        case 5:
+            showSummary();
             break;
         case 0:
             std::cout << "Goodbye!";
