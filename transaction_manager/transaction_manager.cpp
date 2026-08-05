@@ -22,9 +22,10 @@ void TransactionManager::showTransactions() const
     if (!ensureNotEmpty())
         return;
 
-    for (const auto &transaction : transactions)
+    for (int i = 0; i < transactions.size(); i++)
     {
-        transaction.print();
+        std::cout << i + 1 << ". ";
+        transactions[i].print();
     }
 }
 

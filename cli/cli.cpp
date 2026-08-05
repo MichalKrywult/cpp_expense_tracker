@@ -130,6 +130,7 @@ void CLI::run()
 {
     while (true)
     {
+        std::cout << "=====MENU=====\n";
         std::cout << "1. Add\n";
         std::cout << "2. Show\n";
         std::cout << "3. Search by title\n";
