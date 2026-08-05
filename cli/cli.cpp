@@ -126,6 +126,23 @@ void CLI::searchTransactionByTitle()
     manager.searchTransactionByTitle(title);
 }
 
+void CLI::handleRemovingTransaction()
+{
+    showTransactions();
+
+    int number = readInt("Transaction number to remove: ");
+
+    try
+    {
+        manager.removeTransaction(number);
+        std::cout << "Transaction removed successfully.\n";
+    }
+    catch (const std::exception &e)
+    {
+        std::cout << e.what() << "\n";
+    }
+}
+
 void CLI::run()
 {
     while (true)
@@ -134,6 +151,7 @@ void CLI::run()
         std::cout << "1. Add\n";
         std::cout << "2. Show\n";
         std::cout << "3. Search by title\n";
+        std::cout << "4. Remove\n";
         std::cout << "0. Exit\n";
 
         switch (readInt("Choice: "))
@@ -146,6 +164,9 @@ void CLI::run()
             break;
         case 3:
             searchTransactionByTitle();
+            break;
+        case 4:
+            handleRemovingTransaction();
             break;
         case 0:
             std::cout << "Goodbye!";

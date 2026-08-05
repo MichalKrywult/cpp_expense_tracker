@@ -13,4 +13,5 @@ public:
     void showTransactions() const;
     void searchTransactionByTitle(const std::string &title) const;
     bool ensureNotEmpty() const;
+    void removeTransaction(int index);
 };

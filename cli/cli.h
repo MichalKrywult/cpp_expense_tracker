@@ -14,6 +14,7 @@ private:
 
     void handleAddingTransaction();
     void showTransactions();
+    void handleRemovingTransaction();
     void searchTransactionByTitle();
 
 public:

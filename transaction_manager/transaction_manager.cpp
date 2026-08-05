@@ -29,6 +29,16 @@ void TransactionManager::showTransactions() const
     }
 }
 
+void TransactionManager::removeTransaction(int index)
+{
+    if (index < 1 || index > transactions.size())
+    {
+        throw std::out_of_range("Invalid transaction number.");
+    }
+
+    transactions.erase(transactions.begin() + (index - 1));
+}
+
 void TransactionManager::searchTransactionByTitle(const std::string &title) const
 {
     if (!ensureNotEmpty())
