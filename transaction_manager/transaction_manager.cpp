@@ -61,6 +61,29 @@ Summary TransactionManager::calculateSummary() const
     return summary;
 }
 
+std::map<std::string, Summary> TransactionManager::calculateCategoriesSummary() const
+{
+    std::map<std::string, Summary> summary;
+
+    for (const auto &transaction : transactions)
+    {
+        Summary &category = summary[transaction.getCategory()];
+
+        if (transaction.getType() == TransactionType::Income)
+        {
+            category.income += transaction.getAmount();
+        }
+        else
+        {
+            category.expense += transaction.getAmount();
+        }
+
+        category.balance = category.income - category.expense;
+    }
+
+    return summary;
+}
+
 void TransactionManager::searchTransactionByTitle(const std::string &title) const
 {
     if (!ensureNotEmpty())

@@ -1,6 +1,7 @@
 #include <iostream>
 #include <stdexcept>
 #include <cctype>
+#include <map>
 
 #include "cli.h"
 #include "../transaction/transaction.h"
@@ -121,6 +122,20 @@ void CLI::showSummary()
     std::cout << "Balance: " << summary.balance << '\n';
 }
 
+void CLI::showCategoriesSummary()
+{
+    std::map<std::string, Summary> summaries = manager.calculateCategoriesSummary();
+
+    std::cout << "========== SUMMARY ==========\n";
+    for (const auto &[category, summary] : summaries)
+    {
+        std::cout << category << '\n';
+        std::cout << "Income : " << summary.income << '\n';
+        std::cout << "Expense: " << summary.expense << '\n';
+        std::cout << "Balance: " << summary.balance << "\n\n";
+    }
+}
+
 void CLI::handleAddingTransaction()
 {
     while (true)
@@ -205,6 +220,7 @@ void CLI::run()
         std::cout << "3. Search by title\n";
         std::cout << "4. Remove\n";
         std::cout << "5. Summary\n";
+        std::cout << "6. Summary for each category\n";
         std::cout << "0. Exit\n";
 
         switch (readInt("Choice: "))
@@ -223,6 +239,9 @@ void CLI::run()
             break;
         case 5:
             showSummary();
+            break;
+        case 6:
+            showCategoriesSummary();
             break;
         case 0:
             std::cout << "Goodbye!";

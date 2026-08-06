@@ -18,6 +18,7 @@ private:
     void handleRemovingTransaction();
     void searchTransactionByTitle();
     void showSummary();
+    void showCategoriesSummary();
 
 public:
     CLI(TransactionManager &manager);
