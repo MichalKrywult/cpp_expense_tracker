@@ -1,5 +1,6 @@
 #include <iostream>
 #include <stdexcept>
+#include <cctype>
 
 #include "cli.h"
 #include "../transaction/transaction.h"
@@ -17,6 +18,47 @@ std::string CLI::readString(const std::string &prompt)
     std::getline(std::cin, value);
 
     return value;
+}
+
+std::string CLI::readDate()
+{
+    std::string value;
+
+    while (true)
+    {
+        value = readString("Date (YYYY-MM-DD): ");
+
+        if (value.length() != 10)
+        {
+            std::cout << "Wrong format!\n";
+            continue;
+        }
+
+        if (value[4] != '-' || value[7] != '-')
+        {
+            std::cout << "Wrong format!\n";
+            continue;
+        }
+
+        bool correct = true;
+
+        for (int i = 0; i < value.length(); i++)
+        {
+            if (i == 4 || i == 7)
+                continue;
+
+            if (!std::isdigit(value[i]))
+            {
+                correct = false;
+                break;
+            }
+        }
+
+        if (correct)
+            return value;
+
+        std::cout << "Wrong format! Use YYYY-MM-DD.\n";
+    }
 }
 
 int CLI::readInt(const std::string &prompt)
@@ -110,7 +152,7 @@ void CLI::handleAddingTransaction()
                 std::cout << "Amount must be positive.\n";
             }
 
-            std::string date = readString("Date: ");
+            std::string date = readDate();
 
             Transaction transaction(title, amount, category, date, type);
             manager.addTransaction(transaction);

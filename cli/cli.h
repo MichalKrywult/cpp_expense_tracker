@@ -11,6 +11,7 @@ private:
     std::string readString(const std::string &prompt);
     double readDouble(const std::string &prompt);
     TransactionType readTransactionType();
+    std::string readDate();
 
     void handleAddingTransaction();
     void showTransactions();
