@@ -1,6 +1,8 @@
 #pragma once
 
 #include "../transaction/transaction.h"
+#include "../storage/storage.h"
+
 #include <vector>
 #include <map>
 #include <string>
@@ -16,8 +18,10 @@ class TransactionManager
 {
 private:
     std::vector<Transaction> transactions;
+    Storage storage;
 
 public:
+    TransactionManager();
     void addTransaction(const Transaction &transaction);
     void showTransactions() const;
     void searchTransactionByTitle(const std::string &title) const;

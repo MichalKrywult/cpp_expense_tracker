@@ -1,0 +1,18 @@
+#pragma once
+
+#include "../transaction/transaction.h"
+#include <vector>
+#include <string>
+
+class Storage
+{
+public:
+    Storage(const std::string &filename);
+
+    void save(const std::vector<Transaction> &transactions);
+    std::vector<Transaction> save();
+    std::vector<Transaction> load();
+
+private:
+    std::string filename;
+};

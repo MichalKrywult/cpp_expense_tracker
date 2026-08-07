@@ -11,6 +11,7 @@ add_executable(
     transaction/transaction.cpp
     transaction_manager/transaction_manager.cpp
     cli/cli.cpp
+    storage/storage.cpp
 )
 
 target_include_directories(

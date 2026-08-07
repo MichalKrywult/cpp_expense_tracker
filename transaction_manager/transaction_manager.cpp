@@ -1,6 +1,12 @@
 #include "transaction_manager.h"
 #include <iostream>
 
+TransactionManager::TransactionManager()
+    : storage("transactions.csv")
+{
+    transactions = storage.load();
+}
+
 bool TransactionManager::ensureNotEmpty() const
 {
     if (transactions.empty())
@@ -15,6 +21,7 @@ bool TransactionManager::ensureNotEmpty() const
 void TransactionManager::addTransaction(const Transaction &transaction)
 {
     transactions.push_back(transaction);
+    storage.save(transactions);
 }
 
 void TransactionManager::showTransactions() const
@@ -40,6 +47,7 @@ void TransactionManager::removeTransaction(int index)
     }
 
     transactions.erase(transactions.begin() + (index - 1));
+    storage.save(transactions);
 }
 
 Summary TransactionManager::calculateSummary() const
