@@ -43,7 +43,7 @@ std::string CLI::readDate()
 
         bool correct = true;
 
-        for (int i = 0; i < value.length(); i++)
+        for (size_t i = 0; i < value.length(); i++)
         {
             if (i == 4 || i == 7)
                 continue;

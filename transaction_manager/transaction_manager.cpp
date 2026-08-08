@@ -29,7 +29,7 @@ void TransactionManager::showTransactions() const
     if (!ensureNotEmpty())
         return;
 
-    for (int i = 0; i < transactions.size(); i++)
+    for (size_t i = 0; i < transactions.size(); i++)
     {
         std::cout << i + 1 << ". ";
         transactions[i].print();
@@ -75,18 +75,18 @@ std::map<std::string, Summary> TransactionManager::calculateCategoriesSummary() 
 
     for (const auto &transaction : transactions)
     {
-        Summary &category = summary[transaction.getCategory()];
+        Summary &categorySummary = summary[transaction.getCategory()];
 
         if (transaction.getType() == TransactionType::Income)
         {
-            category.income += transaction.getAmount();
+            categorySummary.income += transaction.getAmount();
         }
         else
         {
-            category.expense += transaction.getAmount();
+            categorySummary.expense += transaction.getAmount();
         }
 
-        category.balance = category.income - category.expense;
+        categorySummary.balance = categorySummary.income - categorySummary.expense;
     }
 
     return summary;
