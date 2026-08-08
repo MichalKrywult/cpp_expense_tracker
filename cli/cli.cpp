@@ -112,6 +112,38 @@ TransactionType CLI::readTransactionType()
     }
 }
 
+Transaction CLI::readTransaction()
+{
+    TransactionType type = readTransactionType();
+    std::string category = readString("Category: ");
+
+    std::string title;
+    while (true)
+    {
+        title = readString("Title: ");
+
+        if (!title.empty())
+            break;
+
+        std::cout << "Title cannot be empty.\n";
+    }
+
+    double amount;
+    while (true)
+    {
+        amount = readDouble("Amount: ");
+
+        if (amount > 0)
+            break;
+
+        std::cout << "Amount must be positive.\n";
+    }
+
+    std::string date = readDate();
+
+    return Transaction(title, amount, category, date, type);
+}
+
 void CLI::showSummary()
 {
     Summary summary = manager.calculateSummary();
@@ -142,34 +174,8 @@ void CLI::handleAddingTransaction()
     {
         try
         {
-            TransactionType type = readTransactionType();
-            std::string category = readString("Category: ");
+            Transaction transaction = readTransaction();
 
-            std::string title;
-            while (true)
-            {
-                title = readString("Title: ");
-
-                if (!title.empty())
-                    break;
-
-                std::cout << "Title cannot be empty.\n";
-            }
-
-            double amount;
-            while (true)
-            {
-                amount = readDouble("Amount: ");
-
-                if (amount > 0)
-                    break;
-
-                std::cout << "Amount must be positive.\n";
-            }
-
-            std::string date = readDate();
-
-            Transaction transaction(title, amount, category, date, type);
             manager.addTransaction(transaction);
 
             std::cout << "Transaction added successfully.\n";
@@ -179,6 +185,26 @@ void CLI::handleAddingTransaction()
         {
             std::cout << e.what() << "\nPlease try again.\n\n";
         }
+    }
+}
+
+void CLI::handleEditingTransaction()
+{
+    showTransactions();
+
+    int number = readInt("Transaction number to edit: ");
+
+    try
+    {
+        Transaction transaction = readTransaction();
+
+        manager.editTransaction(number, transaction);
+
+        std::cout << "Transaction edited successfully.\n";
+    }
+    catch (const std::exception &e)
+    {
+        std::cout << e.what() << "\n";
     }
 }
 
@@ -219,8 +245,9 @@ void CLI::run()
         std::cout << "2. Show\n";
         std::cout << "3. Search by title\n";
         std::cout << "4. Remove\n";
-        std::cout << "5. Summary\n";
-        std::cout << "6. Summary for each category\n";
+        std::cout << "5. Edit transaction\n";
+        std::cout << "6. Summary\n";
+        std::cout << "7. Summary for each category\n";
         std::cout << "0. Exit\n";
 
         switch (readInt("Choice: "))
@@ -238,9 +265,12 @@ void CLI::run()
             handleRemovingTransaction();
             break;
         case 5:
-            showSummary();
+            handleEditingTransaction();
             break;
         case 6:
+            showSummary();
+            break;
+        case 7:
             showCategoriesSummary();
             break;
         case 0:

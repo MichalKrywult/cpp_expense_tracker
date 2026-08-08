@@ -12,6 +12,7 @@ private:
     double readDouble(const std::string &prompt);
     TransactionType readTransactionType();
     std::string readDate();
+    Transaction readTransaction();
 
     void handleAddingTransaction();
     void showTransactions();
@@ -19,6 +20,7 @@ private:
     void searchTransactionByTitle();
     void showSummary();
     void showCategoriesSummary();
+    void handleEditingTransaction();
 
 public:
     CLI(TransactionManager &manager);

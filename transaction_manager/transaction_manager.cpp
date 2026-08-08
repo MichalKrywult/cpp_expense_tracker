@@ -50,6 +50,22 @@ void TransactionManager::removeTransaction(int index)
     storage.save(transactions);
 }
 
+void TransactionManager::editTransaction(
+    int index,
+    const Transaction &transaction)
+{
+    if (!ensureNotEmpty())
+        return;
+
+    if (index < 1 || index > transactions.size())
+    {
+        throw std::out_of_range("Invalid transaction number.");
+    }
+
+    transactions[index - 1] = transaction;
+    storage.save(transactions);
+}
+
 Summary TransactionManager::calculateSummary() const
 {
     if (!ensureNotEmpty())

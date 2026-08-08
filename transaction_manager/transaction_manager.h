@@ -27,6 +27,7 @@ public:
     void searchTransactionByTitle(const std::string &title) const;
     bool ensureNotEmpty() const;
     void removeTransaction(int index);
+    void editTransaction(int index, const Transaction &transaction);
     Summary calculateSummary() const;
     std::map<std::string, Summary> calculateCategoriesSummary() const;
 };
