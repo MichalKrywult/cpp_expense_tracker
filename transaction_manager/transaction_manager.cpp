@@ -4,7 +4,15 @@
 TransactionManager::TransactionManager()
     : storage("transactions.csv")
 {
-    transactions = storage.load();
+    try
+    {
+        transactions = storage.load();
+    }
+    catch (const std::exception &e)
+    {
+        std::cerr << "Error loading transactions: "
+                  << e.what() << '\n';
+    }
 }
 
 bool TransactionManager::ensureNotEmpty() const

@@ -37,9 +37,9 @@ std::vector<Transaction> Storage::load()
     std::vector<Transaction> transactions;
     std::ifstream file(filename);
 
-    if (!file)
+    if (!file.is_open())
     {
-        return transactions;
+        throw std::runtime_error("Could not open save file");
     }
 
     std::string line;
