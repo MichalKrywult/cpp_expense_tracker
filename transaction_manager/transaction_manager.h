@@ -26,6 +26,7 @@ public:
     void showTransactions() const;
     void searchTransactionByTitle(const std::string &title) const;
     bool ensureNotEmpty() const;
+    bool saveTransactionsSafely();
     void removeTransaction(int index);
     void editTransaction(int index, const Transaction &transaction);
     Summary calculateSummary() const;

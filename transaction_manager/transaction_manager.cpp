@@ -18,10 +18,29 @@ bool TransactionManager::ensureNotEmpty() const
     return true;
 }
 
+bool TransactionManager::saveTransactionsSafely()
+{
+    try
+    {
+        storage.save(transactions);
+        return true;
+    }
+    catch (const std::exception &e)
+    {
+        std::cout << "Error saving transactions: "
+                  << e.what() << '\n';
+        return false;
+    }
+}
+
 void TransactionManager::addTransaction(const Transaction &transaction)
 {
     transactions.push_back(transaction);
-    storage.save(transactions);
+
+    if (!saveTransactionsSafely())
+    {
+        transactions.pop_back();
+    }
 }
 
 void TransactionManager::showTransactions() const
@@ -46,8 +65,15 @@ void TransactionManager::removeTransaction(int index)
         throw std::out_of_range("Invalid transaction number.");
     }
 
+    auto removedTransaction = transactions[index - 1];
     transactions.erase(transactions.begin() + (index - 1));
-    storage.save(transactions);
+
+    if (!saveTransactionsSafely())
+    {
+        transactions.insert(
+            transactions.begin() + (index - 1),
+            removedTransaction);
+    }
 }
 
 void TransactionManager::editTransaction(
@@ -62,8 +88,13 @@ void TransactionManager::editTransaction(
         throw std::out_of_range("Invalid transaction number.");
     }
 
+    Transaction oldTransaction = transactions[index - 1];
     transactions[index - 1] = transaction;
-    storage.save(transactions);
+
+    if (!saveTransactionsSafely())
+    {
+        transactions[index - 1] = oldTransaction;
+    }
 }
 
 Summary TransactionManager::calculateSummary() const

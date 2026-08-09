@@ -12,9 +12,9 @@ void Storage::save(const std::vector<Transaction> &transactions)
 {
     std::ofstream file(filename);
 
-    if (!file)
+    if (!file.is_open())
     {
-        return;
+        throw std::runtime_error("Could not open save file");
     }
 
     for (const auto &transaction : transactions)
