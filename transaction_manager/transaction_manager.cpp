@@ -152,6 +152,12 @@ void TransactionManager::searchTransactionByTitle(const std::string &title) cons
     if (!ensureNotEmpty())
         return;
 
+    if (title.empty())
+    {
+        std::cout << "Please enter a non-empty title.\n";
+        return;
+    }
+
     bool found = false;
 
     for (const auto &transaction : transactions)

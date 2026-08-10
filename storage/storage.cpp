@@ -19,6 +19,7 @@ void Storage::save(const std::vector<Transaction> &transactions)
 
     for (const auto &transaction : transactions)
     {
+        // the csv file is parsed by the semicolons ;
         file << transaction.getTitle()
              << ";"
              << transaction.getAmount()
@@ -47,12 +48,13 @@ std::vector<Transaction> Storage::load()
     {
         std::stringstream ss(line);
 
+        // the csv file is parsed by the semicolons ;
         std::string title;
         std::getline(ss, title, ';');
 
         std::string amount_temp;
         std::getline(ss, amount_temp, ';');
-        double amount = std::stod(amount_temp);
+        double amount = std::stod(amount_temp); // standard library conversion from string to double type
 
         std::string category;
         std::getline(ss, category, ';');
