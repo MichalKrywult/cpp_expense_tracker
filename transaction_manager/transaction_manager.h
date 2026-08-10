@@ -29,6 +29,7 @@ public:
     bool saveTransactionsSafely();
     void removeTransaction(int index);
     void editTransaction(int index, const Transaction &transaction);
+    void showOneTransaction(int index) const;
     Summary calculateSummary() const;
     std::map<std::string, Summary> calculateCategoriesSummary() const;
 };

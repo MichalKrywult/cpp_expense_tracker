@@ -225,6 +225,18 @@ void CLI::handleRemovingTransaction()
 
     int number = readInt("Transaction number to remove: ");
 
+    std::cout << "Are you sure you want to remove transaction:;\n";
+    manager.showOneTransaction(number);
+    std::cout << " (y/n):";
+
+    std::string choice;
+    std::cin >> choice;
+
+    if (choice != "y")
+    {
+        return;
+    }
+
     try
     {
         manager.removeTransaction(number);

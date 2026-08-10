@@ -105,6 +105,14 @@ void TransactionManager::editTransaction(
     }
 }
 
+void TransactionManager::showOneTransaction(int index) const
+{
+    if (!ensureNotEmpty())
+        return;
+
+    transactions[index - 1].print();
+}
+
 Summary TransactionManager::calculateSummary() const
 {
     if (!ensureNotEmpty())
