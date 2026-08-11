@@ -70,9 +70,21 @@ int CLI::readInt(const std::string &prompt)
 
         try
         {
-            return std::stoi(input);
+            // position will store the position where std::stoi stopped reading the number.
+            size_t position;
+
+            // Try to convert the string into an integer.
+            int value = std::stoi(input, &position);
+
+            // Check if vaules match
+            if (position != input.length())
+            {
+                throw std::invalid_argument("Extra characters");
+            }
+
+            return value;
         }
-        catch (...)
+        catch (const std::exception &)
         {
             std::cout << "Invalid number. Try again.\n";
         }
@@ -87,9 +99,17 @@ double CLI::readDouble(const std::string &prompt)
 
         try
         {
-            return std::stod(input);
+            size_t position;
+            int value = std::stod(input, &position);
+
+            if (position != input.length())
+            {
+                throw std::invalid_argument("Extra characters");
+            }
+
+            return value;
         }
-        catch (...)
+        catch (const std::exception &)
         {
             std::cout << "Invalid number. Try again.\n";
         }

@@ -69,9 +69,13 @@ std::vector<Transaction> Storage::load()
         {
             transactionType = TransactionType::Income;
         }
-        else
+        else if (type == "Expense")
         {
             transactionType = TransactionType::Expense;
+        }
+        else
+        {
+            throw std::runtime_error("Invalid transaction type in file");
         }
 
         Transaction transaction(
