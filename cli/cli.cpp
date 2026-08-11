@@ -196,10 +196,17 @@ void CLI::handleAddingTransaction()
         {
             Transaction transaction = readTransaction();
 
-            manager.addTransaction(transaction);
-
-            std::cout << "Transaction added successfully.\n";
-            return;
+            bool completed = manager.addTransaction(transaction);
+            if (completed)
+            {
+                std::cout << "Transaction added successfully.\n";
+                return;
+            }
+            else
+            {
+                std::cout << "Something went wrong, transaction wasn't added.\n";
+                return;
+            }
         }
         catch (const std::exception &e)
         {

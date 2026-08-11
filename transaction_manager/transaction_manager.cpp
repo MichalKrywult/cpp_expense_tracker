@@ -41,14 +41,17 @@ bool TransactionManager::saveTransactionsSafely()
     }
 }
 
-void TransactionManager::addTransaction(const Transaction &transaction)
+bool TransactionManager::addTransaction(const Transaction &transaction)
 {
     transactions.push_back(transaction);
 
     if (!saveTransactionsSafely())
     {
         transactions.pop_back();
+        return false;
     }
+
+    return true;
 }
 
 void TransactionManager::showTransactions() const
