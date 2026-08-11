@@ -8,6 +8,50 @@ Storage::Storage(const std::string &filename)
 {
 }
 
+Transaction Storage::parseLine(const std::string &line)
+{
+    std::stringstream ss(line);
+
+    // the csv file is parsed by the semicolons ;
+    std::string title;
+    std::getline(ss, title, ';');
+
+    std::string amount_temp;
+    std::getline(ss, amount_temp, ';');
+    double amount = std::stod(amount_temp); // standard library conversion from string to double type
+
+    std::string category;
+    std::getline(ss, category, ';');
+
+    std::string date;
+    std::getline(ss, date, ';');
+
+    std::string type;
+    std::getline(ss, type, ';');
+    TransactionType transactionType;
+    if (type == "Income")
+    {
+        transactionType = TransactionType::Income;
+    }
+    else if (type == "Expense")
+    {
+        transactionType = TransactionType::Expense;
+    }
+    else
+    {
+        throw std::runtime_error("Invalid transaction type in file");
+    }
+
+    Transaction transaction(
+        title,
+        amount,
+        category,
+        date,
+        transactionType);
+
+    return transaction;
+}
+
 void Storage::save(const std::vector<Transaction> &transactions)
 {
     std::ofstream file(filename);
@@ -46,47 +90,14 @@ std::vector<Transaction> Storage::load()
     std::string line;
     while (std::getline(file, line))
     {
-        std::stringstream ss(line);
-
-        // the csv file is parsed by the semicolons ;
-        std::string title;
-        std::getline(ss, title, ';');
-
-        std::string amount_temp;
-        std::getline(ss, amount_temp, ';');
-        double amount = std::stod(amount_temp); // standard library conversion from string to double type
-
-        std::string category;
-        std::getline(ss, category, ';');
-
-        std::string date;
-        std::getline(ss, date, ';');
-
-        std::string type;
-        std::getline(ss, type, ';');
-        TransactionType transactionType;
-        if (type == "Income")
+        if (line.empty())
         {
-            transactionType = TransactionType::Income;
+            continue;
         }
-        else if (type == "Expense")
-        {
-            transactionType = TransactionType::Expense;
-        }
-        else
-        {
-            throw std::runtime_error("Invalid transaction type in file");
-        }
-
-        Transaction transaction(
-            title,
-            amount,
-            category,
-            date,
-            transactionType);
-
-        transactions.push_back(transaction);
+        
+        // Transaction parsedLine = parseLine(line);
+        // transactions.push_back(parsedLine);
+        transactions.push_back(parseLine(line));
     }
-
     return transactions;
 }
