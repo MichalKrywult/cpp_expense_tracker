@@ -224,27 +224,47 @@ void CLI::handleRemovingTransaction()
     showTransactions();
 
     int number = readInt("Transaction number to remove: ");
-
-    std::cout << "Are you sure you want to remove transaction:;\n";
-    manager.showOneTransaction(number);
-    std::cout << " (y/n):";
-
     std::string choice;
-    std::cin >> choice;
 
-    if (choice != "y")
+    do
     {
-        return;
-    }
+        std::cout << "Are you sure you want to remove transaction:\n";
 
-    try
+        try
+        {
+            manager.showOneTransaction(number);
+        }
+        catch (const std::exception &e)
+        {
+            std::cout << e.what() << '\n';
+            return;
+        }
+
+        choice = readString("(y/n): ");
+
+        if (choice != "y" && choice != "Y" &&
+            choice != "n" && choice != "N")
+        {
+            std::cout << "Invalid input. Please enter y or n.\n";
+        }
+
+    } while (choice != "y" && choice != "Y" && choice != "n" && choice != "N");
+
+    if (choice == "y" || choice == "Y")
     {
-        manager.removeTransaction(number);
-        std::cout << "Transaction removed successfully.\n";
+        try
+        {
+            manager.removeTransaction(number);
+            std::cout << "Transaction removed successfully.\n";
+        }
+        catch (const std::exception &e)
+        {
+            std::cout << e.what() << '\n';
+        }
     }
-    catch (const std::exception &e)
+    else
     {
-        std::cout << e.what() << "\n";
+        std::cout << "Transaction wasn't removed.\n";
     }
 }
 

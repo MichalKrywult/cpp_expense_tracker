@@ -110,6 +110,11 @@ void TransactionManager::showOneTransaction(int index) const
     if (!ensureNotEmpty())
         return;
 
+    if (index < 1 || index > transactions.size())
+    {
+        throw std::out_of_range("Invalid transaction number.");
+    }
+
     transactions[index - 1].print();
 }
 
