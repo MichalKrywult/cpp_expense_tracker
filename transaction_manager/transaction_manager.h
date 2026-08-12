@@ -19,16 +19,19 @@ class TransactionManager
 private:
     std::vector<Transaction> transactions;
     Storage storage;
+    void ensureNotEmpty() const;
 
 public:
     TransactionManager();
+
     void addTransaction(const Transaction &transaction);
-    void showTransactions() const;
-    void searchTransactionByTitle(const std::string &title) const;
-    void ensureNotEmpty() const;
-    void removeTransaction(int index);
     void editTransaction(int index, const Transaction &transaction);
-    void showOneTransaction(int index) const;
+    void removeTransaction(int index);
+
+    Transaction getTransaction(int index) const;
+    std::vector<Transaction> getAllTransactions() const;
+    std::vector<Transaction> searchTransactionByTitle(const std::string &title) const;
+
     Summary calculateSummary() const;
     std::map<std::string, Summary> calculateCategoriesSummary() const;
 };

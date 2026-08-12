@@ -38,40 +38,6 @@ void TransactionManager::addTransaction(const Transaction &transaction)
     }
 }
 
-void TransactionManager::showTransactions() const
-{
-    ensureNotEmpty();
-
-    for (size_t i = 0; i < transactions.size(); i++)
-    {
-        std::cout << i + 1 << ". ";
-        transactions[i].print();
-    }
-}
-
-void TransactionManager::removeTransaction(int index)
-{
-    ensureNotEmpty();
-
-    if (index < 1 || index > transactions.size())
-    {
-        throw std::out_of_range("Invalid transaction number.");
-    }
-
-    auto removedTransaction = transactions[index - 1];
-    transactions.erase(transactions.begin() + (index - 1));
-
-    try
-    {
-        storage.save(transactions);
-    }
-    catch (const std::exception &e)
-    {
-        transactions.insert(transactions.begin() + (index - 1), removedTransaction);
-        throw;
-    }
-}
-
 void TransactionManager::editTransaction(int index, const Transaction &transaction)
 {
     ensureNotEmpty();
@@ -95,7 +61,7 @@ void TransactionManager::editTransaction(int index, const Transaction &transacti
     }
 }
 
-void TransactionManager::showOneTransaction(int index) const
+void TransactionManager::removeTransaction(int index)
 {
     ensureNotEmpty();
 
@@ -104,7 +70,59 @@ void TransactionManager::showOneTransaction(int index) const
         throw std::out_of_range("Invalid transaction number.");
     }
 
-    transactions[index - 1].print();
+    Transaction removedTransaction = transactions[index - 1];
+    transactions.erase(transactions.begin() + (index - 1));
+
+    try
+    {
+        storage.save(transactions);
+    }
+    catch (const std::exception &e)
+    {
+        transactions.insert(transactions.begin() + (index - 1), removedTransaction);
+        throw;
+    }
+}
+
+Transaction TransactionManager::getTransaction(int index) const
+{
+    ensureNotEmpty();
+
+    if (index < 1 || index > transactions.size())
+    {
+        throw std::out_of_range("Invalid transaction number.");
+    }
+    Transaction transaction = transactions[index - 1];
+    return transaction;
+}
+
+std::vector<Transaction> TransactionManager::getAllTransactions() const
+{
+    ensureNotEmpty();
+    return transactions;
+}
+
+std::vector<Transaction> TransactionManager::searchTransactionByTitle(
+    const std::string &title) const
+{
+    ensureNotEmpty();
+
+    if (title.empty())
+    {
+        throw std::invalid_argument("Title cannot be empty.");
+    }
+
+    std::vector<Transaction> result;
+
+    for (const auto &transaction : transactions)
+    {
+        if (transaction.getTitle() == title)
+        {
+            result.push_back(transaction);
+        }
+    }
+
+    return result;
 }
 
 Summary TransactionManager::calculateSummary() const
@@ -146,31 +164,4 @@ std::map<std::string, Summary> TransactionManager::calculateCategoriesSummary() 
     }
 
     return summary;
-}
-
-void TransactionManager::searchTransactionByTitle(const std::string &title) const
-{
-    ensureNotEmpty();
-
-    if (title.empty())
-    {
-        std::cout << "Please enter a non-empty title.\n";
-        return;
-    }
-
-    bool found = false;
-
-    for (const auto &transaction : transactions)
-    {
-        if (transaction.getTitle() == title)
-        {
-            transaction.print();
-            found = true;
-        }
-    }
-
-    if (!found)
-    {
-        std::cout << "No transactions found.\n";
-    }
 }

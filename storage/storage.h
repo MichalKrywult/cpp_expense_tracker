@@ -10,7 +10,6 @@ public:
     Storage(const std::string &filename);
 
     void save(const std::vector<Transaction> &transactions);
-    std::vector<Transaction> save();
     std::vector<Transaction> load();
     Transaction parseLine(const std::string &line);
 

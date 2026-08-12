@@ -257,7 +257,12 @@ void CLI::showTransactions()
 {
     try
     {
-        manager.showTransactions();
+        std::vector<Transaction> allTransactions = manager.getAllTransactions();
+        for (size_t i = 0; i < allTransactions.size(); i++)
+        {
+            std::cout << i + 1 << ". ";
+            allTransactions[i].print();
+        }
     }
     catch (const std::exception &e)
     {
@@ -268,7 +273,20 @@ void CLI::showTransactions()
 void CLI::searchTransactionByTitle()
 {
     std::string title = readString("Title to search: ");
-    manager.searchTransactionByTitle(title);
+    std::vector<Transaction> result = manager.searchTransactionByTitle(title);
+
+    if (result.empty())
+    {
+        std::cout << "No transactions found.\n";
+    }
+    else
+    {
+        for (size_t i = 0; i < result.size(); i++)
+        {
+            std::cout << i + 1 << ". ";
+            result[i].print();
+        }
+    }
 }
 
 void CLI::handleRemovingTransaction()
@@ -286,7 +304,8 @@ void CLI::handleRemovingTransaction()
 
             try
             {
-                manager.showOneTransaction(number);
+                Transaction transaction = manager.getTransaction(number);
+                transaction.print();
             }
             catch (const std::exception &e)
             {
