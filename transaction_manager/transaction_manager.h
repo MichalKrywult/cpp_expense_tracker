@@ -22,11 +22,10 @@ private:
 
 public:
     TransactionManager();
-    bool addTransaction(const Transaction &transaction);
+    void addTransaction(const Transaction &transaction);
     void showTransactions() const;
     void searchTransactionByTitle(const std::string &title) const;
-    bool ensureNotEmpty() const;
-    bool saveTransactionsSafely();
+    void ensureNotEmpty() const;
     void removeTransaction(int index);
     void editTransaction(int index, const Transaction &transaction);
     void showOneTransaction(int index) const;

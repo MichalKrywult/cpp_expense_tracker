@@ -15,49 +15,32 @@ TransactionManager::TransactionManager()
     }
 }
 
-bool TransactionManager::ensureNotEmpty() const
+void TransactionManager::ensureNotEmpty() const
 {
     if (transactions.empty())
     {
-        std::cout << "No transactions.\n";
-        return false;
-    }
-
-    return true;
-}
-
-bool TransactionManager::saveTransactionsSafely()
-{
-    try
-    {
-        storage.save(transactions);
-        return true;
-    }
-    catch (const std::exception &e)
-    {
-        std::cout << "Error saving transactions: "
-                  << e.what() << '\n';
-        return false;
+        throw std::runtime_error("No transactions.");
     }
 }
 
-bool TransactionManager::addTransaction(const Transaction &transaction)
+void TransactionManager::addTransaction(const Transaction &transaction)
 {
     transactions.push_back(transaction);
 
-    if (!saveTransactionsSafely())
+    try
+    {
+        storage.save(transactions);
+    }
+    catch (const std::exception &e)
     {
         transactions.pop_back();
-        return false;
+        throw;
     }
-
-    return true;
 }
 
 void TransactionManager::showTransactions() const
 {
-    if (!ensureNotEmpty())
-        return;
+    ensureNotEmpty();
 
     for (size_t i = 0; i < transactions.size(); i++)
     {
@@ -68,8 +51,7 @@ void TransactionManager::showTransactions() const
 
 void TransactionManager::removeTransaction(int index)
 {
-    if (!ensureNotEmpty())
-        return;
+    ensureNotEmpty();
 
     if (index < 1 || index > transactions.size())
     {
@@ -79,20 +61,20 @@ void TransactionManager::removeTransaction(int index)
     auto removedTransaction = transactions[index - 1];
     transactions.erase(transactions.begin() + (index - 1));
 
-    if (!saveTransactionsSafely())
+    try
     {
-        transactions.insert(
-            transactions.begin() + (index - 1),
-            removedTransaction);
+        storage.save(transactions);
+    }
+    catch (const std::exception &e)
+    {
+        transactions.insert(transactions.begin() + (index - 1), removedTransaction);
+        throw;
     }
 }
 
-void TransactionManager::editTransaction(
-    int index,
-    const Transaction &transaction)
+void TransactionManager::editTransaction(int index, const Transaction &transaction)
 {
-    if (!ensureNotEmpty())
-        return;
+    ensureNotEmpty();
 
     if (index < 1 || index > transactions.size())
     {
@@ -102,16 +84,20 @@ void TransactionManager::editTransaction(
     Transaction oldTransaction = transactions[index - 1];
     transactions[index - 1] = transaction;
 
-    if (!saveTransactionsSafely())
+    try
+    {
+        storage.save(transactions);
+    }
+    catch (const std::exception &e)
     {
         transactions[index - 1] = oldTransaction;
+        throw;
     }
 }
 
 void TransactionManager::showOneTransaction(int index) const
 {
-    if (!ensureNotEmpty())
-        return;
+    ensureNotEmpty();
 
     if (index < 1 || index > transactions.size())
     {
@@ -123,8 +109,7 @@ void TransactionManager::showOneTransaction(int index) const
 
 Summary TransactionManager::calculateSummary() const
 {
-    if (!ensureNotEmpty())
-        return Summary{0.0, 0.0, 0.0};
+    ensureNotEmpty();
 
     Summary summary{0.0, 0.0, 0.0};
 
@@ -165,8 +150,7 @@ std::map<std::string, Summary> TransactionManager::calculateCategoriesSummary() 
 
 void TransactionManager::searchTransactionByTitle(const std::string &title) const
 {
-    if (!ensureNotEmpty())
-        return;
+    ensureNotEmpty();
 
     if (title.empty())
     {

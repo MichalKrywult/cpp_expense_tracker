@@ -116,7 +116,7 @@ double CLI::readDouble(const std::string &prompt)
         try
         {
             size_t position;
-            int value = std::stod(input, &position);
+            double value = std::stod(input, &position);
 
             if (position != input.length())
             {
@@ -182,25 +182,38 @@ Transaction CLI::readTransaction()
 
 void CLI::showSummary()
 {
-    Summary summary = manager.calculateSummary();
+    try
+    {
+        Summary summary = manager.calculateSummary();
 
-    std::cout << "========== SUMMARY ==========\n";
-    std::cout << "Income : " << summary.income << '\n';
-    std::cout << "Expense: " << summary.expense << '\n';
-    std::cout << "Balance: " << summary.balance << '\n';
+        std::cout << "========== SUMMARY ==========\n";
+        std::cout << "Income : " << summary.income << '\n';
+        std::cout << "Expense: " << summary.expense << '\n';
+        std::cout << "Balance: " << summary.balance << '\n';
+    }
+    catch (const std::exception &e)
+    {
+        std::cout << e.what() << '\n';
+    }
 }
 
 void CLI::showCategoriesSummary()
 {
-    std::map<std::string, Summary> summaries = manager.calculateCategoriesSummary();
-
-    std::cout << "========== SUMMARY ==========\n";
-    for (const auto &[category, summary] : summaries)
+    try
     {
-        std::cout << category << '\n';
-        std::cout << "Income : " << summary.income << '\n';
-        std::cout << "Expense: " << summary.expense << '\n';
-        std::cout << "Balance: " << summary.balance << "\n\n";
+        std::map<std::string, Summary> summaries = manager.calculateCategoriesSummary();
+        std::cout << "========== SUMMARY ==========\n";
+        for (const auto &[category, summary] : summaries)
+        {
+            std::cout << category << '\n';
+            std::cout << "Income : " << summary.income << '\n';
+            std::cout << "Expense: " << summary.expense << '\n';
+            std::cout << "Balance: " << summary.balance << "\n\n";
+        }
+    }
+    catch (const std::exception &e)
+    {
+        std::cout << e.what() << '\n';
     }
 }
 
@@ -211,18 +224,9 @@ void CLI::handleAddingTransaction()
         try
         {
             Transaction transaction = readTransaction();
-
-            bool completed = manager.addTransaction(transaction);
-            if (completed)
-            {
-                std::cout << "Transaction added successfully.\n";
-                return;
-            }
-            else
-            {
-                std::cout << "Something went wrong, transaction wasn't added.\n";
-                return;
-            }
+            manager.addTransaction(transaction);
+            std::cout << "Transaction added successfully.\n";
+            return;
         }
         catch (const std::exception &e)
         {
@@ -240,9 +244,7 @@ void CLI::handleEditingTransaction()
     try
     {
         Transaction transaction = readTransaction();
-
         manager.editTransaction(number, transaction);
-
         std::cout << "Transaction edited successfully.\n";
     }
     catch (const std::exception &e)
@@ -253,7 +255,14 @@ void CLI::handleEditingTransaction()
 
 void CLI::showTransactions()
 {
-    manager.showTransactions();
+    try
+    {
+        manager.showTransactions();
+    }
+    catch (const std::exception &e)
+    {
+        std::cout << e.what() << "\n";
+    }
 }
 
 void CLI::searchTransactionByTitle()
@@ -264,50 +273,57 @@ void CLI::searchTransactionByTitle()
 
 void CLI::handleRemovingTransaction()
 {
-    showTransactions();
-
-    int number = readInt("Transaction number to remove: ");
-    std::string choice;
-
-    do
+    try
     {
-        std::cout << "Are you sure you want to remove transaction:\n";
+        showTransactions();
 
-        try
+        int number = readInt("Transaction number to remove: ");
+        std::string choice;
+
+        do
         {
-            manager.showOneTransaction(number);
+            std::cout << "Are you sure you want to remove transaction:\n";
+
+            try
+            {
+                manager.showOneTransaction(number);
+            }
+            catch (const std::exception &e)
+            {
+                std::cout << e.what() << '\n';
+                return;
+            }
+
+            choice = readString("(y/n): ");
+
+            if (choice != "y" && choice != "Y" &&
+                choice != "n" && choice != "N")
+            {
+                std::cout << "Invalid input. Please enter y or n.\n";
+            }
+
+        } while (choice != "y" && choice != "Y" && choice != "n" && choice != "N");
+
+        if (choice == "y" || choice == "Y")
+        {
+            try
+            {
+                manager.removeTransaction(number);
+                std::cout << "Transaction removed successfully.\n";
+            }
+            catch (const std::exception &e)
+            {
+                std::cout << e.what() << '\n';
+            }
         }
-        catch (const std::exception &e)
+        else
         {
-            std::cout << e.what() << '\n';
-            return;
-        }
-
-        choice = readString("(y/n): ");
-
-        if (choice != "y" && choice != "Y" &&
-            choice != "n" && choice != "N")
-        {
-            std::cout << "Invalid input. Please enter y or n.\n";
-        }
-
-    } while (choice != "y" && choice != "Y" && choice != "n" && choice != "N");
-
-    if (choice == "y" || choice == "Y")
-    {
-        try
-        {
-            manager.removeTransaction(number);
-            std::cout << "Transaction removed successfully.\n";
-        }
-        catch (const std::exception &e)
-        {
-            std::cout << e.what() << '\n';
+            std::cout << "Transaction wasn't removed.\n";
         }
     }
-    else
+    catch (const std::exception &e)
     {
-        std::cout << "Transaction wasn't removed.\n";
+        std::cout << e.what() << '\n';
     }
 }
 
