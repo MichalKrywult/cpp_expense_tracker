@@ -43,6 +43,22 @@ std::string CLI::readDate()
 
         bool correct = true;
 
+        int year = std::stoi(value.substr(0, 4));
+        int month = std::stoi(value.substr(5, 2));
+        int day = std::stoi(value.substr(8, 2));
+
+        if (month < 1 || month > 12)
+        {
+            std::cout << "Invalid month.\n";
+            continue;
+        }
+
+        if (day < 1 || day > 31)
+        {
+            std::cout << "Invalid day.\n";
+            continue;
+        }
+
         for (size_t i = 0; i < value.length(); i++)
         {
             if (i == 4 || i == 7)
