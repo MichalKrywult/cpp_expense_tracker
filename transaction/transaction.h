@@ -31,6 +31,4 @@ public:
     std::string getDate() const;
     TransactionType getType() const;
     std::string getTypeString() const;
-
-    void print() const;
 };

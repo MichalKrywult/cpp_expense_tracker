@@ -21,6 +21,7 @@ private:
     void showSummary();
     void showCategoriesSummary();
     void handleEditingTransaction();
+    void printTransaction(const Transaction &transaction);
 
 public:
     CLI(TransactionManager &manager);

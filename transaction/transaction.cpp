@@ -63,13 +63,3 @@ std::string Transaction::getTypeString() const
 
     return "Unknown";
 }
-
-void Transaction::print() const
-{
-    std::cout
-        << getTypeString() << " | "
-        << title << " | "
-        << amount << " | "
-        << category << " | "
-        << date << '\n';
-}

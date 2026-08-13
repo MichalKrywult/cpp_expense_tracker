@@ -11,6 +11,15 @@ CLI::CLI(TransactionManager &manager)
 {
 }
 
+void CLI::printTransaction(const Transaction &transaction)
+{
+    std::cout << "Title: " << transaction.getTitle() << '\n';
+    std::cout << "Amount: " << transaction.getAmount() << '\n';
+    std::cout << "Category: " << transaction.getCategory() << '\n';
+    std::cout << "Date: " << transaction.getDate() << '\n';
+    std::cout << "Type: " << transaction.getTypeString() << '\n';
+}
+
 std::string CLI::readString(const std::string &prompt)
 {
     std::string value;
@@ -261,7 +270,7 @@ void CLI::showTransactions()
         for (size_t i = 0; i < allTransactions.size(); i++)
         {
             std::cout << i + 1 << ". ";
-            allTransactions[i].print();
+            printTransaction(allTransactions[i]);
         }
     }
     catch (const std::exception &e)
@@ -284,7 +293,7 @@ void CLI::searchTransactionByTitle()
         for (size_t i = 0; i < result.size(); i++)
         {
             std::cout << i + 1 << ". ";
-            result[i].print();
+            printTransaction(result[i]);
         }
     }
 }
@@ -305,7 +314,7 @@ void CLI::handleRemovingTransaction()
             try
             {
                 Transaction transaction = manager.getTransaction(number);
-                transaction.print();
+                printTransaction(transaction);
             }
             catch (const std::exception &e)
             {
