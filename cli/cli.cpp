@@ -13,11 +13,11 @@ CLI::CLI(TransactionManager &manager)
 
 void CLI::printTransaction(const Transaction &transaction)
 {
-    std::cout << "Title: " << transaction.getTitle() << '\n';
-    std::cout << "Amount: " << transaction.getAmount() << '\n';
-    std::cout << "Category: " << transaction.getCategory() << '\n';
-    std::cout << "Date: " << transaction.getDate() << '\n';
-    std::cout << "Type: " << transaction.getTypeString() << '\n';
+    std::cout << transaction.getTypeString()
+              << " | " << transaction.getTitle()
+              << " | " << transaction.getAmount()
+              << " | " << transaction.getDate()
+              << " | " << transaction.getCategory() << "\n";
 }
 
 std::string CLI::readString(const std::string &prompt)
@@ -28,63 +28,6 @@ std::string CLI::readString(const std::string &prompt)
     std::getline(std::cin, value);
 
     return value;
-}
-
-std::string CLI::readDate()
-{
-    std::string value;
-
-    while (true)
-    {
-        value = readString("Date (YYYY-MM-DD): ");
-
-        if (value.length() != 10)
-        {
-            std::cout << "Wrong format!\n";
-            continue;
-        }
-
-        if (value[4] != '-' || value[7] != '-')
-        {
-            std::cout << "Wrong format!\n";
-            continue;
-        }
-
-        bool correct = true;
-
-        int year = std::stoi(value.substr(0, 4));
-        int month = std::stoi(value.substr(5, 2));
-        int day = std::stoi(value.substr(8, 2));
-
-        if (month < 1 || month > 12)
-        {
-            std::cout << "Invalid month.\n";
-            continue;
-        }
-
-        if (day < 1 || day > 31)
-        {
-            std::cout << "Invalid day.\n";
-            continue;
-        }
-
-        for (size_t i = 0; i < value.length(); i++)
-        {
-            if (i == 4 || i == 7)
-                continue;
-
-            if (!std::isdigit(value[i]))
-            {
-                correct = false;
-                break;
-            }
-        }
-
-        if (correct)
-            return value;
-
-        std::cout << "Wrong format! Use YYYY-MM-DD.\n";
-    }
 }
 
 int CLI::readInt(const std::string &prompt)
@@ -161,30 +104,9 @@ Transaction CLI::readTransaction()
 {
     TransactionType type = readTransactionType();
     std::string category = readString("Category: ");
-
-    std::string title;
-    while (true)
-    {
-        title = readString("Title: ");
-
-        if (!title.empty())
-            break;
-
-        std::cout << "Title cannot be empty.\n";
-    }
-
-    double amount;
-    while (true)
-    {
-        amount = readDouble("Amount: ");
-
-        if (amount > 0)
-            break;
-
-        std::cout << "Amount must be positive.\n";
-    }
-
-    std::string date = readDate();
+    std::string title = readString("Title: ");
+    double amount = readDouble("Amount: ");
+    std::string date = readString("Date (YYYY-MM-DD): ");
 
     return Transaction(title, amount, category, date, type);
 }
@@ -250,15 +172,19 @@ void CLI::handleEditingTransaction()
 
     int number = readInt("Transaction number to edit: ");
 
-    try
+    while (true)
     {
-        Transaction transaction = readTransaction();
-        manager.editTransaction(number, transaction);
-        std::cout << "Transaction edited successfully.\n";
-    }
-    catch (const std::exception &e)
-    {
-        std::cout << e.what() << "\n";
+        try
+        {
+            Transaction transaction = readTransaction();
+            manager.editTransaction(number, transaction);
+            std::cout << "Transaction edited successfully.\n";
+            break;
+        }
+        catch (const std::exception &e)
+        {
+            std::cout << e.what() << "\n";
+        }
     }
 }
 

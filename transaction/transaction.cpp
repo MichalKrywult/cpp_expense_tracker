@@ -1,5 +1,5 @@
-#include <iostream>
 #include <stdexcept>
+#include <cctype>
 
 #include "transaction.h"
 
@@ -15,14 +15,48 @@ Transaction::Transaction(
       date(date),
       type(type)
 {
-    if (title.empty())
+    // validateTitle(title);
+    // validateAmount(amount);
+    validateDate(date);
+    // validateCategory(category);
+    // validateType(type);
+}
+
+void Transaction::validateDate(const std::string &date)
+{
+    if (date.length() != 10)
     {
-        throw std::invalid_argument("Title cannot be empty");
+        throw std::invalid_argument("Wrong format! Use YYYY-MM-DD");
     }
 
-    if (amount <= 0)
+    if (date[4] != '-' || date[7] != '-')
     {
-        throw std::invalid_argument("Amount must be positive");
+        throw std::invalid_argument("Wrong format! Use YYYY-MM-DD");
+    }
+
+    for (size_t i = 0; i < date.length(); i++)
+    {
+        if (i == 4 || i == 7)
+            continue;
+
+        if (!std::isdigit(date[i]))
+        {
+            throw std::invalid_argument("Wrong format! Use YYYY-MM-DD");
+        }
+    }
+
+    // int year = std::stoi(date.substr(0, 4)); for future validation (?) if needed
+    int month = std::stoi(date.substr(5, 2));
+    int day = std::stoi(date.substr(8, 2));
+
+    if (month < 1 || month > 12)
+    {
+        throw std::invalid_argument("Invalid month");
+    }
+
+    if (day < 1 || day > 31)
+    {
+        throw std::invalid_argument("Invalid day");
     }
 }
 
