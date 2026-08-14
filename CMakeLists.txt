@@ -43,6 +43,10 @@ add_executable(
     ExpenseTrackerTests
     tests/transaction_tests.cpp
     transaction/transaction.cpp
+
+    tests/transaction_manager_tests.cpp
+    transaction_manager/transaction_manager.cpp
+    storage/storage.cpp
 )
 
 target_link_libraries(
