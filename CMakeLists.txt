@@ -46,7 +46,9 @@ add_executable(
 
     tests/transaction_manager_tests.cpp
     transaction_manager/transaction_manager.cpp
+    
     storage/storage.cpp
+    tests/storage_tests.cpp
 )
 
 target_link_libraries(
