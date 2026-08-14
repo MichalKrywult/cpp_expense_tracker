@@ -36,3 +36,20 @@ else()
         -Wswitch-enum
     )
 endif()
+
+enable_testing()
+
+add_executable(
+    ExpenseTrackerTests
+    tests/transaction_tests.cpp
+    transaction/transaction.cpp
+)
+
+target_link_libraries(
+    ExpenseTrackerTests
+    PRIVATE
+    GTest::gtest_main
+)
+
+include(GoogleTest)
+gtest_discover_tests(ExpenseTrackerTests)
