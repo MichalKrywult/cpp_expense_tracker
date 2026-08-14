@@ -1,8 +1,8 @@
 #include "transaction_manager.h"
 #include <iostream>
 
-TransactionManager::TransactionManager()
-    : storage("transactions.csv")
+TransactionManager::TransactionManager(Storage &storage)
+    : storage(storage)
 {
     try
     {

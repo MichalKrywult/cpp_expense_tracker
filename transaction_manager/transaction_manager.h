@@ -22,7 +22,7 @@ private:
     void ensureNotEmpty() const;
 
 public:
-    TransactionManager();
+    TransactionManager(Storage &storage);
 
     void addTransaction(const Transaction &transaction);
     void editTransaction(int index, const Transaction &transaction);
