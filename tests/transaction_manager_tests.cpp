@@ -1,10 +1,13 @@
 #include <gtest/gtest.h>
+#include <filesystem>
 
 #include "../transaction_manager/transaction_manager.h"
 
 TEST(TransactionManagerTest, GetTransactionThrowsWhenEmpty)
 {
-    TransactionManager manager;
+    std::filesystem::remove("transaction_test.csv");
+    Storage storage("transaction_test.csv");
+    TransactionManager manager(storage);
 
     EXPECT_THROW(
         manager.getTransaction(1),
@@ -13,7 +16,9 @@ TEST(TransactionManagerTest, GetTransactionThrowsWhenEmpty)
 
 TEST(TransactionManagerTest, AddsTransaction)
 {
-    TransactionManager manager;
+    std::filesystem::remove("transaction_test.csv");
+    Storage storage("transaction_test.csv");
+    TransactionManager manager(storage);
 
     Transaction transaction(
         "Salary",
@@ -23,7 +28,6 @@ TEST(TransactionManagerTest, AddsTransaction)
         TransactionType::Income);
 
     manager.addTransaction(transaction);
-
     Transaction result = manager.getTransaction(1);
 
     EXPECT_EQ(result.getTitle(), "Salary");
@@ -35,7 +39,9 @@ TEST(TransactionManagerTest, AddsTransaction)
 
 TEST(TransactionManagerTest, ReturnsAddedTransaction)
 {
-    TransactionManager manager;
+    std::filesystem::remove("transaction_test.csv");
+    Storage storage("transaction_test.csv");
+    TransactionManager manager(storage);
 
     Transaction transaction(
         "Salary",
@@ -45,7 +51,6 @@ TEST(TransactionManagerTest, ReturnsAddedTransaction)
         TransactionType::Income);
 
     manager.addTransaction(transaction);
-
     Transaction result = manager.getTransaction(1);
 
     EXPECT_EQ(result.getTitle(), "Salary");
@@ -53,7 +58,9 @@ TEST(TransactionManagerTest, ReturnsAddedTransaction)
 
 TEST(TransactionManagerTest, GetTransactionThrowsForInvalidIndex)
 {
-    TransactionManager manager;
+    std::filesystem::remove("transaction_test.csv");
+    Storage storage("transaction_test.csv");
+    TransactionManager manager(storage);
 
     Transaction transaction(
         "Salary",
