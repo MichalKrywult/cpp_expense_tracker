@@ -42,13 +42,13 @@ void TransactionManager::editTransaction(int index, const Transaction &transacti
 {
     ensureNotEmpty();
 
-    if (index < 1 || index > transactions.size())
+    if (index < 0 || index >= transactions.size())
     {
         throw std::out_of_range("Invalid transaction number.");
     }
 
-    Transaction oldTransaction = transactions[index - 1];
-    transactions[index - 1] = transaction;
+    Transaction oldTransaction = transactions[index];
+    transactions[index] = transaction;
 
     try
     {
@@ -56,7 +56,7 @@ void TransactionManager::editTransaction(int index, const Transaction &transacti
     }
     catch (const std::exception &e)
     {
-        transactions[index - 1] = oldTransaction;
+        transactions[index] = oldTransaction;
         throw;
     }
 }
@@ -65,13 +65,13 @@ void TransactionManager::removeTransaction(int index)
 {
     ensureNotEmpty();
 
-    if (index < 1 || index > transactions.size())
+    if (index < 0 || index >= transactions.size())
     {
         throw std::out_of_range("Invalid transaction number.");
     }
 
-    Transaction removedTransaction = transactions[index - 1];
-    transactions.erase(transactions.begin() + (index - 1));
+    Transaction removedTransaction = transactions[index];
+    transactions.erase(transactions.begin() + (index));
 
     try
     {
@@ -79,7 +79,7 @@ void TransactionManager::removeTransaction(int index)
     }
     catch (const std::exception &e)
     {
-        transactions.insert(transactions.begin() + (index - 1), removedTransaction);
+        transactions.insert(transactions.begin() + (index), removedTransaction);
         throw;
     }
 }
@@ -88,11 +88,11 @@ Transaction TransactionManager::getTransaction(int index) const
 {
     ensureNotEmpty();
 
-    if (index < 1 || index > transactions.size())
+    if (index < 0 || index >= transactions.size())
     {
         throw std::out_of_range("Invalid transaction number.");
     }
-    Transaction transaction = transactions[index - 1];
+    Transaction transaction = transactions[index];
     return transaction;
 }
 

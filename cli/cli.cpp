@@ -170,7 +170,7 @@ void CLI::handleEditingTransaction()
 {
     showTransactions();
 
-    int number = readInt("Transaction number to edit: ");
+    int number = readInt("Transaction number to edit: ") - 1;
 
     while (true)
     {
@@ -230,7 +230,7 @@ void CLI::handleRemovingTransaction()
     {
         showTransactions();
 
-        int number = readInt("Transaction number to remove: ");
+        int number = readInt("Transaction number to remove: ") - 1;
         std::string choice;
 
         do
