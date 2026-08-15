@@ -1,27 +1,38 @@
 #include <gtest/gtest.h>
 #include <filesystem>
+#include <string>
 
 #include "../transaction_manager/transaction_manager.h"
 
-TEST(TransactionManagerTest, GetTransactionThrowsWhenEmpty)
+class TransactionManagerTest : public ::testing::Test
 {
-    std::filesystem::remove("transaction_manager_test.csv");
+protected:
+    const std::string filename = "transaction_manager_test.csv";
 
-    Storage storage("transaction_manager_test.csv");
+    void SetUp() override
+    {
+        std::filesystem::remove(filename);
+    }
+
+    void TearDown() override
+    {
+        std::filesystem::remove(filename);
+    }
+};
+
+TEST_F(TransactionManagerTest, GetTransactionThrowsWhenEmpty)
+{
+    Storage storage(filename);
     TransactionManager manager(storage);
 
     EXPECT_THROW(
         manager.getTransaction(0),
         std::runtime_error);
-
-    std::filesystem::remove("transaction_manager_test.csv");
 }
 
-TEST(TransactionManagerTest, AddsTransaction)
+TEST_F(TransactionManagerTest, AddsTransaction)
 {
-    std::filesystem::remove("transaction_manager_test.csv");
-
-    Storage storage("transaction_manager_test.csv");
+    Storage storage(filename);
     TransactionManager manager(storage);
 
     Transaction transaction(
@@ -39,14 +50,11 @@ TEST(TransactionManagerTest, AddsTransaction)
     EXPECT_EQ(result.getCategory(), "Job");
     EXPECT_EQ(result.getDate(), "2022-01-14");
     EXPECT_EQ(result.getType(), TransactionType::Income);
-
-    std::filesystem::remove("transaction_manager_test.csv");
 }
 
-TEST(TransactionManagerTest, GetTransactionThrowsForInvalidIndex)
+TEST_F(TransactionManagerTest, GetTransactionThrowsForInvalidIndex)
 {
-    std::filesystem::remove("transaction_manager_test.csv");
-    Storage storage("transaction_manager_test.csv");
+    Storage storage(filename);
     TransactionManager manager(storage);
 
     Transaction transaction(
@@ -61,15 +69,11 @@ TEST(TransactionManagerTest, GetTransactionThrowsForInvalidIndex)
     EXPECT_THROW(
         manager.getTransaction(2),
         std::out_of_range);
-
-    std::filesystem::remove("transaction_manager_test.csv");
 }
 
-TEST(TransactionManagerTest, RemovesTransaction)
+TEST_F(TransactionManagerTest, RemovesTransaction)
 {
-    std::filesystem::remove("transaction_manager_test.csv");
-
-    Storage storage("transaction_manager_test.csv");
+    Storage storage(filename);
     TransactionManager manager(storage);
 
     for (int i = 0; i < 3; i++)
@@ -80,34 +84,28 @@ TEST(TransactionManagerTest, RemovesTransaction)
             "Job",
             "2022-01-14",
             TransactionType::Income);
+
         manager.addTransaction(transaction);
     }
 
     manager.removeTransaction(1);
 
-    EXPECT_DOUBLE_EQ(manager.getTransaction(0).getAmount(), 0);
-    EXPECT_DOUBLE_EQ(manager.getTransaction(1).getAmount(), 2);
-
-    std::filesystem::remove("transaction_manager_test.csv");
+    EXPECT_EQ(manager.getTransaction(0).getAmount(), 0);
+    EXPECT_EQ(manager.getTransaction(1).getAmount(), 2);
 }
 
-TEST(TransactionManagerTest, RemoveThrowsWhenEmpty)
+TEST_F(TransactionManagerTest, RemoveThrowsWhenEmpty)
 {
-    std::filesystem::remove("transaction_manager_test.csv");
 
-    Storage storage("transaction_manager_test.csv");
+    Storage storage(filename);
     TransactionManager manager(storage);
 
     EXPECT_THROW(manager.removeTransaction(0), std::runtime_error);
-
-    std::filesystem::remove("transaction_manager_test.csv");
 }
 
-TEST(TransactionManagerTest, RemoveThrowsWhenNegativeIndex)
+TEST_F(TransactionManagerTest, RemoveThrowsWhenNegativeIndex)
 {
-    std::filesystem::remove("transaction_manager_test.csv");
-
-    Storage storage("transaction_manager_test.csv");
+    Storage storage(filename);
     TransactionManager manager(storage);
 
     Transaction transaction(
@@ -119,15 +117,11 @@ TEST(TransactionManagerTest, RemoveThrowsWhenNegativeIndex)
     manager.addTransaction(transaction);
 
     EXPECT_THROW(manager.removeTransaction(-1), std::out_of_range);
-
-    std::filesystem::remove("transaction_manager_test.csv");
 }
 
-TEST(TransactionManagerTest, RemoveThrowsWhenIndexOutOfRange)
+TEST_F(TransactionManagerTest, RemoveThrowsWhenIndexOutOfRange)
 {
-    std::filesystem::remove("transaction_manager_test.csv");
-
-    Storage storage("transaction_manager_test.csv");
+    Storage storage(filename);
     TransactionManager manager(storage);
 
     Transaction transaction(
@@ -139,6 +133,4 @@ TEST(TransactionManagerTest, RemoveThrowsWhenIndexOutOfRange)
     manager.addTransaction(transaction);
 
     EXPECT_THROW(manager.removeTransaction(1), std::out_of_range);
-
-    std::filesystem::remove("transaction_manager_test.csv");
 }
