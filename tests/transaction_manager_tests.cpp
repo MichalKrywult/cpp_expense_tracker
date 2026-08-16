@@ -352,3 +352,103 @@ TEST_F(TransactionManagerTest, SearchByTitleThrowsWhenEmptyTitle)
 
     EXPECT_THROW(manager.searchTransactionByTitle(""), std::invalid_argument);
 }
+
+TEST_F(TransactionManagerTest, CalculateSummaryThrowsWhenEmpty)
+{
+    Storage storage(filename);
+    TransactionManager manager(storage);
+
+    EXPECT_THROW(manager.calculateSummary(), std::runtime_error);
+}
+
+TEST_F(TransactionManagerTest, CalculatesSummary)
+{
+    Storage storage(filename);
+    TransactionManager manager(storage);
+
+    Transaction transaction(
+        "Salary",
+        5000.0,
+        "Job",
+        "2022-01-14",
+        TransactionType::Income);
+    manager.addTransaction(transaction);
+
+    Transaction transaction2(
+        "Rent",
+        3000.0,
+        "House",
+        "2022-01-15",
+        TransactionType::Expense);
+
+    manager.addTransaction(transaction2);
+    Summary summary = manager.calculateSummary();
+
+    EXPECT_DOUBLE_EQ(summary.income, 5000.0);
+    EXPECT_DOUBLE_EQ(summary.expense, 3000.0);
+    EXPECT_DOUBLE_EQ(summary.balance, 2000.0);
+}
+
+TEST_F(TransactionManagerTest, CalculatesCategoriesSummary)
+{
+    Storage storage(filename);
+    TransactionManager manager(storage);
+
+    Transaction transaction(
+        "Salary",
+        5000.0,
+        "Job",
+        "2022-01-14",
+        TransactionType::Income);
+    manager.addTransaction(transaction);
+
+    Transaction transaction2(
+        "Rent",
+        3000.0,
+        "House",
+        "2022-01-14",
+        TransactionType::Expense);
+    manager.addTransaction(transaction2);
+
+    Transaction transaction3(
+        "Groceries",
+        500.0,
+        "Food",
+        "2022-01-14",
+        TransactionType::Expense);
+    manager.addTransaction(transaction3);
+
+    Transaction transaction4(
+        "Bonus",
+        200.0,
+        "Job",
+        "2022-01-14",
+        TransactionType::Income);
+    manager.addTransaction(transaction4);
+
+    auto summary = manager.calculateCategoriesSummary();
+
+    EXPECT_EQ(summary.size(), 3);
+
+    EXPECT_DOUBLE_EQ(summary["Job"].income, 5200.0);
+    EXPECT_DOUBLE_EQ(summary["Job"].expense, 0.0);
+    EXPECT_DOUBLE_EQ(summary["Job"].balance, 5200.0);
+
+    EXPECT_DOUBLE_EQ(summary["House"].income, 0.0);
+    EXPECT_DOUBLE_EQ(summary["House"].expense, 3000.0);
+    EXPECT_DOUBLE_EQ(summary["House"].balance, -3000.0);
+
+    EXPECT_DOUBLE_EQ(summary["Food"].income, 0.0);
+    EXPECT_DOUBLE_EQ(summary["Food"].expense, 500.0);
+    EXPECT_DOUBLE_EQ(summary["Food"].balance, -500.0);
+}
+
+TEST_F(TransactionManagerTest, CalculateCategoriesSummaryReturnsEmptyWhenEmpty)
+{
+    Storage storage(filename);
+    TransactionManager manager(storage);
+
+    auto summary = manager.calculateCategoriesSummary();
+
+    EXPECT_TRUE(summary.empty());
+}
