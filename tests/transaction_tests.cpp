@@ -3,18 +3,28 @@
 
 #include "../transaction/transaction.h"
 
-TEST(TransactionTest, AcceptsValidDate)
+class TransactionTestFixture : public ::testing::Test
 {
-    EXPECT_NO_THROW(
-        Transaction(
-            "Salary",
-            5000.0,
-            "Job",
-            "2022-01-14",
-            TransactionType::Income));
+protected:
+    Transaction transaction{
+        "Salary",
+        5000.0,
+        "Job",
+        "2022-01-14",
+        TransactionType::Income};
+};
+
+TEST_F(TransactionTestFixture, ReturnsCorrectProperties)
+{
+    EXPECT_EQ(transaction.getTitle(), "Salary");
+    EXPECT_DOUBLE_EQ(transaction.getAmount(), 5000.0);
+    EXPECT_EQ(transaction.getCategory(), "Job");
+    EXPECT_EQ(transaction.getDate(), "2022-01-14");
+    EXPECT_EQ(transaction.getType(), TransactionType::Income);
+    EXPECT_EQ(transaction.getTypeString(), "Income");
 }
 
-TEST(TransactionTest, RejectsInvalidDate)
+TEST(TransactionTest, RejectsDateWithInvalidFormat)
 {
     EXPECT_THROW(
         Transaction(
@@ -24,18 +34,6 @@ TEST(TransactionTest, RejectsInvalidDate)
             "2022/01/14",
             TransactionType::Income),
         std::invalid_argument);
-}
-
-TEST(TransactionTest, ReturnsCorrectDate)
-{
-    Transaction transaction(
-        "Salary",
-        5000.0,
-        "Job",
-        "2022-01-14",
-        TransactionType::Income);
-
-    EXPECT_EQ(transaction.getDate(), "2022-01-14");
 }
 
 TEST(TransactionTest, RejectsInvalidMonth)
@@ -72,66 +70,6 @@ TEST(TransactionTest, RejectsDateWithWrongLength)
             "2022-1-14",
             TransactionType::Income),
         std::invalid_argument);
-}
-
-TEST(TransactionTest, ReturnsCorrectTitle)
-{
-    Transaction transaction(
-        "Salary",
-        5000.0,
-        "Job",
-        "2022-01-14",
-        TransactionType::Income);
-
-    EXPECT_EQ(transaction.getTitle(), "Salary");
-}
-
-TEST(TransactionTest, ReturnsCorrectAmount)
-{
-    Transaction transaction(
-        "Salary",
-        5000.0,
-        "Job",
-        "2022-01-14",
-        TransactionType::Income);
-
-    EXPECT_DOUBLE_EQ(transaction.getAmount(), 5000.0);
-}
-
-TEST(TransactionTest, ReturnsCorrectCategory)
-{
-    Transaction transaction(
-        "Salary",
-        5000.0,
-        "Job",
-        "2022-01-14",
-        TransactionType::Income);
-
-    EXPECT_EQ(transaction.getCategory(), "Job");
-}
-
-TEST(TransactionTest, ReturnsCorrectType)
-{
-    Transaction transaction(
-        "Salary",
-        5000.0,
-        "Job",
-        "2022-01-14",
-        TransactionType::Income);
-
-    EXPECT_EQ(transaction.getType(), TransactionType::Income);
-}
-
-TEST(TransactionTest, ReturnsIncomeTypeString)
-{
-    Transaction transaction(
-        "Salary",
-        5000.0,
-        "Job",
-        "2022-01-14",
-        TransactionType::Income);
-
-    EXPECT_EQ(transaction.getTypeString(), "Income");
 }
 
 TEST(TransactionTest, ReturnsExpenseTypeString)
