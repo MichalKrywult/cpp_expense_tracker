@@ -256,3 +256,99 @@ TEST_F(TransactionManagerTest, EditDoesNotChangeOtherTransactions)
     EXPECT_DOUBLE_EQ(manager.getTransaction(1).getAmount(), 3);
     EXPECT_DOUBLE_EQ(manager.getTransaction(2).getAmount(), 2);
 }
+
+TEST_F(TransactionManagerTest, SearchByTitleOne)
+{
+    Storage storage(filename);
+    TransactionManager manager(storage);
+
+    Transaction transaction(
+        "Salary",
+        5000.0,
+        "Job",
+        "2022-01-14",
+        TransactionType::Income);
+    manager.addTransaction(transaction);
+
+    auto result = manager.searchTransactionByTitle("Salary");
+
+    ASSERT_EQ(result.size(), 1);
+    EXPECT_EQ(result[0].getTitle(), "Salary");
+    EXPECT_DOUBLE_EQ(result[0].getAmount(), 5000.0);
+    EXPECT_EQ(result[0].getCategory(), "Job");
+    EXPECT_EQ(result[0].getDate(), "2022-01-14");
+    EXPECT_EQ(result[0].getType(), TransactionType::Income);
+}
+
+TEST_F(TransactionManagerTest, SearchByTitleMultiple)
+{
+    Storage storage(filename);
+    TransactionManager manager(storage);
+
+    for (int i = 0; i < 3; i++)
+    {
+        Transaction transaction(
+            "Salary" + std::to_string(i),
+            5000.0,
+            "Job",
+            "2022-01-14",
+            TransactionType::Income);
+
+        manager.addTransaction(transaction);
+    }
+
+    Transaction transaction(
+        "Salary2",
+        5000.0,
+        "Job",
+        "2022-01-14",
+        TransactionType::Income);
+
+    manager.addTransaction(transaction);
+
+    auto result = manager.searchTransactionByTitle("Salary2");
+
+    ASSERT_EQ(result.size(), 2);
+    EXPECT_EQ(result[0].getTitle(), "Salary2");
+    EXPECT_EQ(result[1].getTitle(), "Salary2");
+}
+
+TEST_F(TransactionManagerTest, SearchByTitleThrowsWhenEmpty)
+{
+    Storage storage(filename);
+    TransactionManager manager(storage);
+
+    EXPECT_THROW(manager.searchTransactionByTitle("Title"), std::runtime_error);
+}
+
+TEST_F(TransactionManagerTest, SearchByTitleReturnsEmptyWhenNoMatch)
+{
+    Storage storage(filename);
+    TransactionManager manager(storage);
+
+    Transaction transaction(
+        "Salary",
+        5000.0,
+        "Job",
+        "2022-01-14",
+        TransactionType::Income);
+    manager.addTransaction(transaction);
+
+    EXPECT_EQ(manager.searchTransactionByTitle("Title").size(), 0);
+}
+
+TEST_F(TransactionManagerTest, SearchByTitleThrowsWhenEmptyTitle)
+{
+    Storage storage(filename);
+    TransactionManager manager(storage);
+
+    Transaction transaction(
+        "Salary",
+        5000.0,
+        "Job",
+        "2022-01-14",
+        TransactionType::Income);
+    manager.addTransaction(transaction);
+
+    EXPECT_THROW(manager.searchTransactionByTitle(""), std::invalid_argument);
+}
