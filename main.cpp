@@ -3,7 +3,8 @@
 
 int main()
 {
-    TransactionManager manager;
+    Storage storage("transactions.csv");
+    TransactionManager manager(storage);
 
     CLI cli(manager);
     cli.run();

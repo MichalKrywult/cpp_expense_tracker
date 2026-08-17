@@ -5,6 +5,13 @@ project(ExpenseTracker)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+include(FetchContent)
+FetchContent_Declare(
+    googletest
+    URL https://github.com/google/googletest/archive/refs/tags/v1.17.0.zip
+)
+FetchContent_MakeAvailable(googletest)
+
 add_executable(
     ExpenseTracker
     main.cpp
@@ -29,3 +36,26 @@ else()
         -Wswitch-enum
     )
 endif()
+
+enable_testing()
+
+add_executable(
+    ExpenseTrackerTests
+    tests/transaction_tests.cpp
+    transaction/transaction.cpp
+
+    tests/transaction_manager_tests.cpp
+    transaction_manager/transaction_manager.cpp
+    
+    storage/storage.cpp
+    tests/storage_tests.cpp
+)
+
+target_link_libraries(
+    ExpenseTrackerTests
+    PRIVATE
+    GTest::gtest_main
+)
+
+include(GoogleTest)
+gtest_discover_tests(ExpenseTrackerTests)

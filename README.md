@@ -1,4 +1,3 @@
-
 # C++ Expense Tracker
 
 A simple CLI expense tracking app built with C++, designed to help managing and tracking finances efficiently. This project is primarily intended for learning modern C++ and improving my programming skills.
@@ -30,17 +29,29 @@ Run the executable from the `build` directory:
 ./build/cpp_expense_tracker
 ```
 
-> On Windows, the executable will typically be located at:
+On Windows, the executable will typically be located at:
 >
 > ```text
 > build/Debug/cpp_expense_tracker.exe
 > ```
 
+## Tests
+
+Tests are available in the `tests` directory:
+
+```bash
+./test
+```
+
+On Windows, in order to run the tests use:
+>
+> ```text
+> ctest --test-dir build -C Debug
+> ```
 
 ## License
 
 This project is licensed under the MIT License.
-
 
 ## Contact
 
