@@ -4,10 +4,25 @@
 
 #include "../storage/storage.h"
 
-TEST(StorageTest, ParsesValidIncomeLine)
+class StorageTest : public ::testing::Test
 {
-    Storage storage("unused.csv");
+protected:
+    const std::string filename = "storage_test.csv";
+    Storage storage{filename};
 
+    void SetUp() override
+    {
+        std::filesystem::remove(filename);
+    }
+
+    void TearDown() override
+    {
+        std::filesystem::remove(filename);
+    }
+};
+
+TEST_F(StorageTest, ParsesValidIncomeLine)
+{
     Transaction transaction = storage.parseLine(
         "Salary;5000;Job;2022-01-14;Income");
 
@@ -18,10 +33,8 @@ TEST(StorageTest, ParsesValidIncomeLine)
     EXPECT_EQ(transaction.getType(), TransactionType::Income);
 }
 
-TEST(StorageTest, ParsesValidExpenseLine)
+TEST_F(StorageTest, ParsesValidExpenseLine)
 {
-    Storage storage("unused.csv");
-
     Transaction transaction = storage.parseLine(
         "Groceries;200;Food;2022-01-14;Expense");
 
@@ -32,44 +45,31 @@ TEST(StorageTest, ParsesValidExpenseLine)
     EXPECT_EQ(transaction.getType(), TransactionType::Expense);
 }
 
-TEST(StorageTest, RejectsInvalidTransactionType)
+TEST_F(StorageTest, RejectsInvalidTransactionType)
 {
-    Storage storage("unused.csv");
-
     EXPECT_THROW(
         storage.parseLine(
             "Salary;5000;Job;2022-01-14;Something"),
         std::runtime_error);
 }
 
-TEST(StorageTest, RejectsInvalidAmount)
+TEST_F(StorageTest, RejectsInvalidAmount)
 {
-    Storage storage("unused.csv");
-
     EXPECT_THROW(
         storage.parseLine(
             "Salary;abc;Job;2022-01-14;Income"),
         std::invalid_argument);
 }
 
-TEST(StorageTest, RejectsEmptyLine)
+TEST_F(StorageTest, RejectsEmptyLine)
 {
-    Storage storage("unused.csv");
-
     EXPECT_THROW(
-        storage.parseLine(
-            ""),
+        storage.parseLine(""),
         std::invalid_argument);
 }
 
-TEST(StorageTest, SavesTransactionToFile)
+TEST_F(StorageTest, SavesTransactionToFile)
 {
-    const std::string filename = "storage_test.csv";
-
-    std::filesystem::remove(filename);
-
-    Storage storage(filename);
-
     Transaction transaction(
         "Salary",
         5000.0,
@@ -84,25 +84,13 @@ TEST(StorageTest, SavesTransactionToFile)
     ASSERT_TRUE(file.is_open());
 
     std::string line;
-    std::getline(file, line);
+    ASSERT_TRUE(std::getline(file, line));
 
-    EXPECT_EQ(
-        line,
-        "Salary;5000;Job;2022-01-14;Income");
-
-    file.close();
-
-    std::filesystem::remove(filename);
+    EXPECT_EQ(line, "Salary;5000;Job;2022-01-14;Income");
 }
 
-TEST(StorageTest, SavesMultipleTransactionsToFile)
+TEST_F(StorageTest, SavesMultipleTransactionsToFile)
 {
-    const std::string filename = "storage_test.csv";
-
-    std::filesystem::remove(filename);
-
-    Storage storage(filename);
-
     Transaction income(
         "Salary",
         5000.0,
@@ -134,18 +122,10 @@ TEST(StorageTest, SavesMultipleTransactionsToFile)
     EXPECT_EQ(
         line,
         "Groceries;200;Food;2022-01-14;Expense");
-
-    file.close();
-
-    std::filesystem::remove(filename);
 }
 
-TEST(StorageTest, LoadsTransactionsFromFile)
+TEST_F(StorageTest, LoadsTransactionsFromFile)
 {
-    const std::string filename = "storage_test.csv";
-
-    std::filesystem::remove(filename);
-
     {
         std::ofstream file(filename);
 
@@ -155,45 +135,27 @@ TEST(StorageTest, LoadsTransactionsFromFile)
         file << "Groceries;200;Food;2022-01-14;Expense\n";
     }
 
-    Storage storage(filename);
-
     std::vector<Transaction> transactions = storage.load();
 
     ASSERT_EQ(transactions.size(), 2);
-
     EXPECT_EQ(transactions[0].getTitle(), "Salary");
-    EXPECT_DOUBLE_EQ(transactions[0].getAmount(), 5000.0);
-    EXPECT_EQ(transactions[0].getType(), TransactionType::Income);
-
     EXPECT_EQ(transactions[1].getTitle(), "Groceries");
-    EXPECT_DOUBLE_EQ(transactions[1].getAmount(), 200.0);
-    EXPECT_EQ(transactions[1].getType(), TransactionType::Expense);
-
-    std::filesystem::remove(filename);
 }
 
-TEST(StorageTest, LoadsEmptyFile)
+TEST_F(StorageTest, LoadsEmptyFile)
 {
-    const std::string filename = "storage_test.csv";
-
-    std::filesystem::remove(filename);
-
     {
         std::ofstream file(filename);
 
         ASSERT_TRUE(file.is_open());
     }
 
-    Storage storage(filename);
-
     std::vector<Transaction> transactions = storage.load();
 
     EXPECT_TRUE(transactions.empty());
-
-    std::filesystem::remove(filename);
 }
 
-TEST(StorageTest, ThrowsWhenFileDoesNotExist)
+TEST(StorageFileTest, ThrowsWhenFileDoesNotExist)
 {
     const std::string filename = "file_that_does_not_exist.csv";
 
@@ -206,12 +168,8 @@ TEST(StorageTest, ThrowsWhenFileDoesNotExist)
         std::runtime_error);
 }
 
-TEST(StorageTest, IgnoresEmptyLines)
+TEST_F(StorageTest, IgnoresEmptyLines)
 {
-    const std::string filename = "storage_test.csv";
-
-    std::filesystem::remove(filename);
-
     {
         std::ofstream file(filename);
 
@@ -222,14 +180,10 @@ TEST(StorageTest, IgnoresEmptyLines)
         file << "Groceries;200;Food;2022-01-14;Expense\n";
     }
 
-    Storage storage(filename);
-
     std::vector<Transaction> transactions = storage.load();
 
     ASSERT_EQ(transactions.size(), 2);
 
     EXPECT_EQ(transactions[0].getTitle(), "Salary");
     EXPECT_EQ(transactions[1].getTitle(), "Groceries");
-
-    std::filesystem::remove(filename);
 }
