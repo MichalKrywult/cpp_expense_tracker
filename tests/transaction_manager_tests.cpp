@@ -452,3 +452,60 @@ TEST_F(TransactionManagerTest, CalculateCategoriesSummaryReturnsEmptyWhenEmpty)
 
     EXPECT_TRUE(summary.empty());
 }
+
+TEST_F(TransactionManagerTest, CalculateStatisticsThrowsWhenEmpty)
+{
+    Storage storage(filename);
+    TransactionManager manager(storage);
+
+    EXPECT_THROW(manager.calculateStatistics(), std::runtime_error);
+}
+
+TEST_F(TransactionManagerTest, CalculateStatistics)
+{
+    Storage storage(filename);
+    TransactionManager manager(storage);
+
+    Transaction transaction(
+        "Salary",
+        5000.0,
+        "Job",
+        "2022-01-14",
+        TransactionType::Income);
+    manager.addTransaction(transaction);
+
+    Transaction transaction2(
+        "Rent",
+        3000.0,
+        "House",
+        "2022-01-14",
+        TransactionType::Expense);
+    manager.addTransaction(transaction2);
+
+    Transaction transaction3(
+        "Groceries",
+        500.0,
+        "House",
+        "2022-01-14",
+        TransactionType::Expense);
+    manager.addTransaction(transaction3);
+
+    Transaction transaction4(
+        "Bonus",
+        200.0,
+        "Job",
+        "2022-01-14",
+        TransactionType::Income);
+    manager.addTransaction(transaction4);
+
+    Statistics statistics = manager.calculateStatistics();
+
+    EXPECT_EQ(statistics.averageExpense, 1750);
+    EXPECT_EQ(statistics.averageIncome, 2600);
+    EXPECT_EQ(statistics.biggestExpense, 3000);
+    EXPECT_EQ(statistics.biggestIncome, 5000);
+    EXPECT_EQ(statistics.smallestIncome, 200);
+    EXPECT_EQ(statistics.smallestExpense, 500);
+    EXPECT_EQ(statistics.numberOfTransactions, 4);
+    EXPECT_EQ(statistics.mostExpensiveCategory, "House");
+}
