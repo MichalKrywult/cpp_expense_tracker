@@ -281,6 +281,34 @@ void CLI::handleRemovingTransaction()
     }
 }
 
+void CLI::showStatistics()
+{
+    try
+    {
+        Statistics statistics = manager.calculateStatistics();
+
+        std::cout << "========== STATISTICS ==========\n";
+        std::cout << "Transactions: " << statistics.numberOfTransactions << '\n';
+
+        std::cout << "\nIncome:\n";
+        std::cout << "Average : " << statistics.averageIncome << '\n';
+        std::cout << "Biggest : " << statistics.biggestIncome << '\n';
+        std::cout << "Smallest: " << statistics.smallestIncome << '\n';
+
+        std::cout << "\nExpense:\n";
+        std::cout << "Average : " << statistics.averageExpense << '\n';
+        std::cout << "Biggest : " << statistics.biggestExpense << '\n';
+        std::cout << "Smallest: " << statistics.smallestExpense << '\n';
+
+        std::cout << "\nMost expensive category: "
+                  << statistics.mostExpensiveCategory << '\n';
+    }
+    catch (const std::exception &e)
+    {
+        std::cout << e.what() << '\n';
+    }
+}
+
 void CLI::run()
 {
     while (true)
@@ -293,6 +321,7 @@ void CLI::run()
         std::cout << "5. Edit transaction\n";
         std::cout << "6. Summary\n";
         std::cout << "7. Summary for each category\n";
+        std::cout << "8. Statistics\n";
         std::cout << "0. Exit\n";
 
         switch (readInt("Choice: "))
@@ -317,6 +346,9 @@ void CLI::run()
             break;
         case 7:
             showCategoriesSummary();
+            break;
+        case 8:
+            showStatistics();
             break;
         case 0:
             std::cout << "Goodbye!";

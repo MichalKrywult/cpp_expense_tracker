@@ -1,8 +1,8 @@
 #include "transaction_manager.h"
 #include <iostream>
 
-TransactionManager::TransactionManager()
-    : storage("transactions.csv")
+TransactionManager::TransactionManager(Storage &storage)
+    : storage(storage)
 {
     try
     {
@@ -164,4 +164,91 @@ std::map<std::string, Summary> TransactionManager::calculateCategoriesSummary() 
     }
 
     return summary;
+}
+
+Statistics TransactionManager::calculateStatistics()
+{
+
+    ensureNotEmpty();
+
+    double minimum_income = 2147483647;
+    double maximum_income = -1;
+
+    double minimum_expense = 2147483647;
+    double maximum_expense = -1;
+
+    double averageIncome = 0;
+    double averageExpense = 0;
+
+    int expenseCount = 0;
+    int incomeCount = 0;
+
+    for (const auto &transaction : transactions)
+    {
+        double amount = transaction.getAmount();
+        TransactionType type = transaction.getType();
+
+        if (type == TransactionType::Income)
+        {
+            if (amount > maximum_income)
+            {
+                maximum_income = amount;
+            }
+
+            else if (amount < minimum_income)
+            {
+                minimum_income = amount;
+            }
+
+            averageIncome += amount;
+            incomeCount++;
+        }
+        else if (type == TransactionType::Expense)
+        {
+            if (amount > maximum_expense)
+            {
+                maximum_expense = amount;
+            }
+
+            else if (amount < minimum_expense)
+            {
+                minimum_expense = amount;
+            }
+
+            averageExpense += amount;
+            expenseCount++;
+        }
+    }
+
+    std::map<std::string, Summary> summaryCategories = calculateCategoriesSummary();
+    std::string max_category = "";
+    double max_category_balance = -1;
+
+    for (const auto &category : summaryCategories)
+    {
+        double balance = category.second.expense;
+        if (max_category_balance < balance)
+        {
+            max_category_balance = balance;
+            max_category = category.first;
+        }
+    }
+
+    Statistics statistics;
+    statistics.averageExpense =
+        expenseCount > 0 ? averageExpense / expenseCount : 0;
+
+    statistics.averageIncome =
+        incomeCount > 0 ? averageIncome / incomeCount : 0;
+
+    statistics.biggestExpense = maximum_expense;
+    statistics.biggestIncome = maximum_income;
+
+    statistics.smallestExpense = minimum_expense;
+    statistics.smallestIncome = minimum_income;
+
+    statistics.numberOfTransactions = transactions.size();
+    statistics.mostExpensiveCategory = max_category;
+
+    return statistics;
 }
