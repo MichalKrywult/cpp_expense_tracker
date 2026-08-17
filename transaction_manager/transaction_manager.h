@@ -14,6 +14,21 @@ struct Summary
     double balance = 0.0;
 };
 
+struct Statistics
+{
+    double averageExpense;
+    double averageIncome;
+
+    double biggestExpense;
+    double smallestExpense;
+
+    double biggestIncome;
+    double smallestIncome;
+
+    int numberOfTransactions;
+    std::string mostExpensiveCategory;
+};
+
 class TransactionManager
 {
 private:
@@ -22,7 +37,7 @@ private:
     void ensureNotEmpty() const;
 
 public:
-    TransactionManager();
+    TransactionManager(Storage &storage);
 
     void addTransaction(const Transaction &transaction);
     void editTransaction(int index, const Transaction &transaction);
@@ -34,4 +49,5 @@ public:
 
     Summary calculateSummary() const;
     std::map<std::string, Summary> calculateCategoriesSummary() const;
+    Statistics calculateStatistics();
 };
