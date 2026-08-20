@@ -15,8 +15,8 @@ Transaction::Transaction(
       date(date),
       type(type)
 {
-    // validateTitle(title);
-    // validateAmount(amount);
+    validateTitle(title);
+    validateAmount(amount);
     validateDate(date);
     // validateCategory(category);
     // validateType(type);
@@ -57,6 +57,22 @@ void Transaction::validateDate(const std::string &date)
     if (day < 1 || day > 31)
     {
         throw std::invalid_argument("Invalid day");
+    }
+}
+
+void Transaction::validateTitle(const std::string &title)
+{
+    if (title == "")
+    {
+        throw std::invalid_argument("Title cannot be empty");
+    }
+}
+
+void Transaction::validateAmount(const double amount)
+{
+    if (amount < 0)
+    {
+        throw std::invalid_argument("Amount cannot be a negative number");
     }
 }
 
